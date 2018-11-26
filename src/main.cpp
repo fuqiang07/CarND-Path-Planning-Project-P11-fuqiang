@@ -489,14 +489,14 @@ int main() {
 
 
                         //My lane
-                        if (mylane(car_d) == mylane(traffic_d))
+                        if (getLaneID(car_d) == getLaneID(traffic_d))
                         {
                             cars_mylane_s.push_back(traffic_s);
                             cars_mylane_vel.push_back(traffic_vel);
                         }
 
                             // My left lane
-                        else if (mylane(traffic_d) > 0 and(mylane(traffic_d) == mylane(car_d)-1))
+                        else if (getLaneID(traffic_d) > 0 and(getLaneID(traffic_d) == getLaneID(car_d)-1))
 
                         {
                             cars_myleft_s.push_back(traffic_s);
@@ -504,7 +504,7 @@ int main() {
                         }
 
                             //My Right lane
-                        else if (mylane(traffic_d) == mylane(car_d)+1)
+                        else if (getLaneID(traffic_d) == getLaneID(car_d)+1)
                         {
                             cars_myright_s.push_back(traffic_s);
                             cars_myright_vel.push_back(traffic_vel);
@@ -724,17 +724,17 @@ int main() {
                         //Stay in current lane at max speed
                         target_s_inc = 0.415;
 
-                        if (mylane(car_d) == 1)
+                        if (getLaneID(car_d) == 1)
                         {
                             target_d = 2.0;
                         }
 
-                        else if (mylane(car_d) == 2)
+                        else if (getLaneID(car_d) == 2)
                         {
                             target_d = 6.0;
                         }
 
-                        else if (mylane(car_d) == 3)
+                        else if (getLaneID(car_d) == 3)
                         {
                             target_d = 10.0;
                         }
@@ -746,22 +746,22 @@ int main() {
                     else if (decision == 1)
                     {
                         //Stay in current lane but slow down
-                        if (ms_to_mph(closest_front_vel) > 45)
+                        if (ms2mph(closest_front_vel) > 45)
                         {
                             target_s_inc = 0.40;
                         }
 
-                        else if (ms_to_mph(closest_front_vel) > 40)
+                        else if (ms2mph(closest_front_vel) > 40)
                         {
                             target_s_inc = 0.35;
                         }
 
-                        else if (ms_to_mph(closest_front_vel) > 35)
+                        else if (ms2mph(closest_front_vel) > 35)
                         {
                             target_s_inc = 0.30;
                         }
 
-                        else if (ms_to_mph(closest_front_vel) > 30)
+                        else if (ms2mph(closest_front_vel) > 30)
                         {
                             target_s_inc = 0.25;
                         }
@@ -769,17 +769,17 @@ int main() {
                         else target_s_inc = 0.22;
 
 
-                        if (mylane(car_d) == 1)
+                        if (getLaneID(car_d) == 1)
                         {
                             target_d = 2.0;
                         }
 
-                        else if (mylane(car_d) == 2)
+                        else if (getLaneID(car_d) == 2)
                         {
                             target_d = 6.0;
                         }
 
-                        else if (mylane(car_d) == 3)
+                        else if (getLaneID(car_d) == 3)
                         {
                             target_d = 10.0;
                         }
@@ -794,12 +794,12 @@ int main() {
 
                         target_s_inc = 0.415;
 
-                        if (mylane(car_d) <= 2) // You can't switch -- another way to maintain sanity
+                        if (getLaneID(car_d) <= 2) // You can't switch -- another way to maintain sanity
                         {
                             target_d = 2.0;
                         }
 
-                        else if (mylane(car_d) == 3)
+                        else if (getLaneID(car_d) == 3)
                         {
                             target_d = 6.0;
                         }
@@ -814,12 +814,12 @@ int main() {
                         target_s_inc = 0.415;
 
 
-                        if (mylane(car_d) == 1)
+                        if (getLaneID(car_d) == 1)
                         {
                             target_d = 6.0;
                         }
 
-                        else if (mylane(car_d) >= 2) //You can't switch -- another way to maintain sanity
+                        else if (getLaneID(car_d) >= 2) //You can't switch -- another way to maintain sanity
                         {
                             target_d = 10.0;
                         }
