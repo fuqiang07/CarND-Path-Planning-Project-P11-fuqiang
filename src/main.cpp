@@ -8,11 +8,11 @@
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
 #include "json.hpp"
+#include "map.h"
 // include library for interpolation
-#include "spline.h"
+//#include "spline.h"
 
 using namespace std;
-using namespace tk;
 
 // for convenience
 using json = nlohmann::json;
@@ -342,9 +342,9 @@ int main() {
     // Waypoint map to read from
     string map_file_ = "../data/highway_map.csv";
     // The max s value before wrapping around the track back to 0
-    const double max_s = 6945.554;
+    /* const double max_s = 6945.554; */
 
-    ifstream in_map_(map_file_.c_str(), ifstream::in);
+/*     ifstream in_map_(map_file_.c_str(), ifstream::in);
 
     string line;
     while (getline(in_map_, line)) {
@@ -364,14 +364,17 @@ int main() {
         map_waypoints_s.push_back(s);
         map_waypoints_dx.push_back(d_x);
         map_waypoints_dy.push_back(d_y);
-    }
+    } */
 
     /*
      * **************************************************************** *
      *        My code here:
      * **************************************************************** *
      */
-    // correct spline calculation at the end of track
+	 Map map;
+	 map.init(map_file_);
+	 map.read();
+    /* // correct spline calculation at the end of track
     map_waypoints_x.push_back(map_waypoints_x[0]);
     map_waypoints_y.push_back(map_waypoints_y[0]);
     map_waypoints_s.push_back(max_s+map_waypoints_s[0]);
@@ -393,11 +396,9 @@ int main() {
     spline path_spline_dx;
     path_spline_dx.set_points(map_waypoints_s, map_waypoints_dx);
     spline path_spline_dy;
-    path_spline_dy.set_points(map_waypoints_s, map_waypoints_dy);
+    path_spline_dy.set_points(map_waypoints_s, map_waypoints_dy); */
 
-    h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy,
-                 &max_s, &path_spline_x, &path_spline_y, &path_spline_dx,
-                 &path_spline_dy](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+    h.onMessage([&map](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
         // "42" at the start of the message means there's a websocket message event.
         // The 4 signifies a websocket message
         // The 2 signifies a websocket event
@@ -955,10 +956,10 @@ int main() {
                         //cout << "\t S position: " << pos_s;
                         //cout<<"\t d position: " << car_d;
 
-                        WP_x = path_spline_x(pos_s);
-                        WP_y = path_spline_y(pos_s);
-                        WP_dx = path_spline_dx(pos_s);
-                        WP_dy = path_spline_dy(pos_s);
+                        WP_x = map.spline_x(pos_s);
+                        WP_y = map.spline_y(pos_s);
+                        WP_dx = map.spline_dx(pos_s);
+                        WP_dy = map.spline_dy(pos_s);
 
                         pos_x = WP_x + (pos_d) * WP_dx;
                         pos_y = WP_y + (pos_d)* WP_dy;
