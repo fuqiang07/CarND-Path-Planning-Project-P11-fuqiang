@@ -19,7 +19,8 @@ double MAX_S;
 /**
  * Initializes Vehicle
  */
-virtual Map::Map() {}
+Map::Map() {}
+Map::~Map() {}
 
 void Map::read(string map_file) {
   ifstream in_map_(map_file.c_str(), ifstream::in);
@@ -140,7 +141,6 @@ void Map::read(string map_file) {
   num_error = 0;
 }
 
-virtual Map::~Map() {}
 
 
 /* void Map::plot(void) {

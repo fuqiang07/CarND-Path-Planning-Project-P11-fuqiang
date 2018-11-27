@@ -14,7 +14,7 @@ public:
   /**
   * Constructor
   */
-  Map() {};
+  Map();
   
   /**
   * Destructor
