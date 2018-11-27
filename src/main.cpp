@@ -371,7 +371,7 @@ int main() {
      * **************************************************************** *
      */
     // correct spline calculation at the end of track
-    .push_back(map_waypoints_x[0]);
+    map_waypoints_y.push_back(map_waypoints_x[0]);
     map_waypoints_y.push_back(map_waypoints_y[0]);
     map_waypoints_s.push_back(max_s+map_waypoints_s[0]);
     map_waypoints_dx.push_back(map_waypoints_dx[0]);
