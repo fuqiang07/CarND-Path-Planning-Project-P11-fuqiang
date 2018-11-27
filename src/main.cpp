@@ -16,7 +16,6 @@
 #include "trajectory.h"
 #include "cost.h"
 #include "predictions.h"
-#include <map>
 
 using namespace std;
 
