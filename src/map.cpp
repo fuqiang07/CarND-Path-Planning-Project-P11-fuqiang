@@ -16,7 +16,7 @@ Map::~Map() {}
 /*
 * Initialize Map.
 */
-void Map::Init(string map_file) {
+void Map::init(string map_file) {
 	map_file_ = map_file;
 	max_s_ = 6945.554;
 }

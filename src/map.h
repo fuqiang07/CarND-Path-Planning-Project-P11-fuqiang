@@ -26,7 +26,7 @@ class Map {
   /*
   * Initialize MAP.
   */
-  void Init(string map_file);
+  void init(string map_file);
   
   void read();
   

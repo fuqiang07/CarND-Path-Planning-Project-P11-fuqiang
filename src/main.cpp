@@ -938,7 +938,7 @@ int main() {
                         //We use difference b/w current s and prev_s to slowly increase the speed of the car
                         //at the beginning
                         pos_s += min(target_s, (delta_prev_s*(1.005)+0.002));
-                        pos_s = fmod(pos_s, max_s); // To reset s at the end of track
+                        pos_s = fmod(pos_s, map.max_s_); // To reset s at the end of track
 
                         //Parameters for delta_d have been optimized to get smooth lane changes
                         if (delta_d >= 0.0)
