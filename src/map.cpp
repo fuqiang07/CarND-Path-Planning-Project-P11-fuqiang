@@ -138,7 +138,7 @@ void Map::read(string map_file) {
   num_error = 0;
 }
 
-Map::~Map() {}
+virtual Map::~Map() {}
 
 
 /* void Map::plot(void) {
