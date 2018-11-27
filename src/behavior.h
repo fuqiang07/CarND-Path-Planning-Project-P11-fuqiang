@@ -6,8 +6,7 @@
 #include <vector>
 #include <cassert>
 
-#include "params.h"
-#include "utility.h"
+#include "global.h"
 #include "predictions.h"
 
 struct Target {

@@ -8,10 +8,9 @@
 #include "map.h"
 #include "behavior.h"
 #include "spline.h"
-#include "utility.h"
 #include "map.h"
 #include "cost.h"
-#include "params.h"
+#include "global.h"
 #include "predictions.h"
 
 #include "Eigen-3.3/Eigen/Dense"

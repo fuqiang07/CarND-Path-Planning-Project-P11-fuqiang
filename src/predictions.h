@@ -7,8 +7,7 @@
 #include <map>
 #include <cassert>
 
-#include "utility.h"
-#include "params.h"
+#include "global.h"
 
 // TODO remove hardcoded values
 

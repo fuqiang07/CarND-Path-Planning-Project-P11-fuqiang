@@ -8,8 +8,7 @@
 #include <cassert>
 #include <cmath>
 
-#include "utility.h"
-#include "params.h"
+#include "global.h"
 #include "predictions.h"
 #include "Eigen-3.3/Eigen/Dense"
 

@@ -6,7 +6,7 @@
 
 const bool PARAM_MAP_BOSCH = true;
 
-extern std::string map_file_; // cf params.cpp
+extern std::string map_file_; 
 
 // The max s value before wrapping around the track back to 0
 const double MAXIMUM_S = 6945.554;

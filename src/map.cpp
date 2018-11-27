@@ -1,5 +1,4 @@
-#include "utility.h"
-#include "params.h"
+#include "global.h"
 
 #include <vector>
 #include <iostream>
