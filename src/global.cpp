@@ -1,8 +1,7 @@
 #include <math.h>
 #include "global.h"
 
-// Waypoint map to read from
-std::string map_file_ = "../data/highway_map.csv";
+
 
 double deg2rad(double x) { return x * M_PI / 180; }
 double rad2deg(double x) { return x * 180 / M_PI; }

@@ -121,4 +121,7 @@ const double PARAM_SD_LC = 10.0;
 // default Safety Distance: will be re-evaluated dynamically
 const double PARAM_SD = 30.0;
 
+// Waypoint map to read from
+std::string map_file_ = "../data/highway_map.csv";
+
 #endif
