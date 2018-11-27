@@ -7,12 +7,12 @@
 #include <math.h>
 
 #include "map.h"
-#include "matplotlibcpp.h"
+//#include "matplotlibcpp.h"
 
 #include <time.h>
 
 
-namespace plt = matplotlibcpp;
+//namespace plt = matplotlibcpp;
 using namespace std;
 
 double MAX_S;
@@ -142,7 +142,7 @@ void Map::read(string map_file) {
 Map::~Map() {}
 
 
-void Map::plot(void) {
+/* void Map::plot(void) {
   plt::title("Map");
   plt::plot(map_waypoints_x, map_waypoints_y, "r*");
   plt::plot(map_waypoints_normx, map_waypoints_normy, "g*");
@@ -153,7 +153,7 @@ void Map::plot(void) {
   vector<double> car_y = { 1, 1129.872};
   plt::plot(car_x, car_y, "gx");
   plt::show();
-}
+} */
 
 int Map::ClosestWaypoint(double x, double y, const vector<double> &maps_x, const vector<double> &maps_y) {
 
