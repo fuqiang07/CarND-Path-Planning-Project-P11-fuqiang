@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include <iostream>
-#include <fstream>
+#include <sstream>
 #include <vector>
 
 using namespace std;
@@ -79,16 +79,4 @@ void Map::read() {
     map_waypoints_s.pop_back();
     map_waypoints_dx.pop_back();
     map_waypoints_dy.pop_back();
-
-  double len_ref = 0;
-  double prev_x = spline_x(0);
-  double prev_y = spline_y(0);
-  for (double s = 1; s <= floor(MAX_S); s++) {
-    double x = spline_x(s);
-    double y = spline_y(s);
-    len_ref += distance(x, y, prev_x, prev_y);
-    prev_x = x;
-    prev_y = y;
-  }
-  cout << "len_ref=" << len_ref << endl;
 }
