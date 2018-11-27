@@ -19,6 +19,8 @@ double MAX_S;
 /**
  * Initializes Vehicle
  */
+virtual Map::Map() {}
+
 void Map::read(string map_file) {
   ifstream in_map_(map_file.c_str(), ifstream::in);
   string line;
