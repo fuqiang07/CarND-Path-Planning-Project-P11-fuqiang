@@ -52,7 +52,7 @@ class Map {
   /*
   * Initialize MAP.
   */
-  void init(string map_file);
+  void init(const string& map_file, const double& max_s);
    /*
   * Read MAP from file.
   */ 
