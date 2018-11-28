@@ -90,6 +90,7 @@ int main() {
                     car.yaw = j[1]["yaw"];
                     car.speed = j[1]["speed"];
 
+					TrajectoryXY previous_path_xy;
                     // Previous path data given to the Planner
                     vector<double>  previous_path_x = j[1]["previous_path_x"];
                     vector<double>  previous_path_y = j[1]["previous_path_y"];
@@ -133,11 +134,11 @@ int main() {
                     // -- prev_size: close to 100 msec when possible -not lower bcz of simulator latency- for trajectory (re)generation ---
                     // points _before_ prev_size are kept from previous generated trajectory
                     // points _after_  prev_size will be re-generated
-                    PreviousPath previous_path = PreviousPath(previous_path_xy, prev_path_sd, min(prev_size, PARAM_PREV_PATH_XY_REUSED));
+                    PreviousPath previous_path = PreviousPath(previous_path_xy, prev_path_sd, min(prev_size, GLOBAL_PREV_PATH_XY_REUSED));
 
                     // --------------------------------------------------------------------------
                     // --- 6 car predictions x 50 points x 2 coord (x,y): 6 objects predicted over 1 second horizon ---
-                    Predictions predictions = Predictions(sensor_fusion, car, PARAM_NB_POINTS /* 50 */);
+                    Predictions predictions = Predictions(sensor_fusion, car, GLOBAL_NUM_POINTS /* 50 */);
 
                     Behavior behavior = Behavior(sensor_fusion, car, predictions);
                     vector<Target> targets = behavior.get_targets();
@@ -150,7 +151,7 @@ int main() {
                     next_x_vals = trajectory.getMinCostTrajectoryXY().x_vals;
                     next_y_vals = trajectory.getMinCostTrajectoryXY().y_vals;
 
-                    if (PARAM_TRAJECTORY_JMT) {
+                    if (GLOBAL_TRAJECTORY_JMT) {
                         prev_path_sd = trajectory.getMinCostTrajectorySD();
                     }
 

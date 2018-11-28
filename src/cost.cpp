@@ -8,11 +8,12 @@ using Eigen::VectorXd;
 using Eigen::Vector2d;
 
 
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
 // checkCollision as per SAT (Separating Axis Theorem)
 // to identify collision between 2 convex rectangular objects
 // cf http://www.dyn4j.org/2010/01/sat/
 // ------------------------------------------------------------
+*/
 bool Cost::check_collision(double x0, double y0, double theta0, double x1, double y1, double theta1)
 {
   Vector2d trans0;
@@ -25,8 +26,8 @@ bool Cost::check_collision(double x0, double y0, double theta0, double x1, doubl
   rot1 << cos(theta1), -sin(theta1),
           sin(theta1),  cos(theta1);
 
-  double W = PARAM_CAR_SAFETY_W; //2;
-  double L = PARAM_CAR_SAFETY_L; //5;
+  double W = GLOBAL_CAR_SAFETY_W; //3;
+  double L = GLOBAL_CAR_SAFETY_L; //6;
 
   MatrixXd car(2,4);
   car << -L/2, L/2,  L/2, -L/2,
@@ -90,7 +91,7 @@ vector<Coord> prediction = it->second;
 assert(prediction.size() == trajectory.x_vals.size());
 assert(prediction.size() == trajectory.y_vals.size());
 
-for (int i = 0; i < PARAM_MAX_COLLISION_STEP; i++) { // up to 50 (x,y) coordinates
+for (int i = 0; i < GLOBAL_MAX_COLLISION_STEP; i++) { // up to 25 (x,y) coordinates
 double obj_x = prediction[i].x;
 double obj_y = prediction[i].y;
 double obj_x_next = prediction[i+1].x;
@@ -141,25 +142,25 @@ bool Cost::check_max_capabilities(vector<vector<double>> &traj)
     y_2 = traj[1][t-2];
     y_3 = traj[1][t-3];
 
-    vx = (x - x_1) / PARAM_DT;
-    vy = (y - y_1) / PARAM_DT;
+    vx = (x - x_1) / GLOBAL_TS;
+    vy = (y - y_1) / GLOBAL_TS;
 
-    ax = (x - 2*x_1 + x_2) / (PARAM_DT * PARAM_DT);
-    ay = (y - 2*y_1 + y_2) / (PARAM_DT * PARAM_DT);
+    ax = (x - 2*x_1 + x_2) / (GLOBAL_TS * GLOBAL_TS);
+    ay = (y - 2*y_1 + y_2) / (GLOBAL_TS * GLOBAL_TS);
 
     // rounding to 2 decimals (cm precision) to ensure numerical stability
     jx = (x - 3*x_1 + 3*x_2 - x_3);
     jx = roundf(jx * 100) / 100;
-    jx = jx / (PARAM_DT * PARAM_DT * PARAM_DT);
+    jx = jx / (GLOBAL_TS * GLOBAL_TS * GLOBAL_TS);
     jy = (y - 3*y_1 + 3*y_2 - y_3);
     jy = roundf(jy * 100) / 100;
-    jy = jy / (PARAM_DT * PARAM_DT * PARAM_DT);
+    jy = jy / (GLOBAL_TS * GLOBAL_TS * GLOBAL_TS);
 
     vel = sqrt(vx*vx + vy*vy);
     acc = sqrt(ax*ax + ay*ay);
     jerk = sqrt(jx*jx + jy*jy);
 
-    total_jerk += jerk * PARAM_DT;
+    total_jerk += jerk * GLOBAL_TS;
 
     //cout << "jx=" << jx << " jy=" << jy << endl;
     //cout << "vel=" << vel << " acc=" << acc << " jerk=" << jerk << endl;
@@ -170,7 +171,7 @@ bool Cost::check_max_capabilities(vector<vector<double>> &traj)
       max_acc = acc;
   }
 
-  jerk_per_second = total_jerk / (PARAM_NB_POINTS * PARAM_DT);
+  jerk_per_second = total_jerk / (GLOBAL_NUM_POINTS * GLOBAL_TS);
 
   if (roundf(max_vel) > GLOBAL_MAX_SPEED || roundf(max_acc) > GLOBAL_MAX_ACCEL || jerk_per_second > GLOBAL_MAX_JERK) {
     cout << "max_vel=" << max_vel << " max_acc=" << max_acc << " jerk_per_second=" << jerk_per_second  << endl;
@@ -229,36 +230,20 @@ Cost::Cost(TrajectoryXY const &trajectory, Target target, Predictions &predict, 
 
   // 1) FEASIBILITY cost
   cost_feasibility += check_collision_on_trajectory(trajectory, predictions);
-  //if (check_max_capabilities(trajectory))
-  //{
-  //  cost_feasibility += 1;
-  //}
-  cost_ = cost_ + PARAM_COST_FEASIBILITY * cost_feasibility;
+  cost_ = cost_ + GLOBAL_COST_FEASIBILITY * cost_feasibility;
 
   // 2) SAFETY cost
-  // double dmin = get_predicted_dmin(trajectory, predictions);
-  // assert(dmin >= 0);
-  // if (dmin < PARAM_DIST_SAFETY) {
-  //   cost_safety = PARAM_DIST_SAFETY - dmin;
-  // } else {
-  //   cost_safety = 0;
-  // }
-  cost_ = cost_ + PARAM_COST_SAFETY * cost_safety;
+  cost_ = cost_ + GLOBAL_COST_SAFETY * cost_safety;
 
   // 3) LEGALITY cost
-  cost_ = cost_ + PARAM_COST_LEGALITY * cost_legality;
+  cost_ = cost_ + GLOBAL_COST_LEGALITY * cost_legality;
 
   // 4) COMFORT cost
-  cost_ = cost_ + PARAM_COST_COMFORT * cost_comfort;
+  cost_ = cost_ + GLOBAL_COST_COMFORT * cost_comfort;
 
   // 5) EFFICIENCY cost
-  //cost_efficiency = GLOBAL_MAX_SPEED_MPH - target.velocity;
-  //cost_efficiency = GLOBAL_MAX_SPEED_MPH - predictions_lane_speed[target.lane];
-
-  // sensor_fusion speed in m/s !!!
-  //cost_efficiency = GLOBAL_MAX_SPEED - predictions_lane_speed[target.lane];
-  cost_efficiency = PARAM_FOV - predict.get_lane_free_space(target.lane);
-  cost_ = cost_ + PARAM_COST_EFFICIENCY * cost_efficiency;
+  cost_efficiency = GLOBAL_FIELD_OF_VIEW - predict.get_lane_free_space(target.lane);
+  cost_ = cost_ + GLOBAL_COST_EFFICIENCY * cost_efficiency;
 
   cout << "car_lane=" << car_lane << " target.lane=" << target.lane << " target_lvel=" << predict.get_lane_speed(target.lane) << " cost=" << cost_ << endl;
 }

@@ -48,9 +48,9 @@ Behavior::Behavior(vector<vector<double>> const &sensor_fusion, CarData car, Pre
   if (too_close) {
     //ref_vel -= 2 * .224; // 5 m.s-2 under the 10 requirement
     if (ref_vel_ms > closest_speed_ms) { // in m.s-1 !
-      car_speed_target -= PARAM_MAX_SPEED_INC_MPH; // in mph !
+      car_speed_target -= GLOBAL_MAX_SPEED_INC_MPH; // in mph !
       if (closest_dist <= 10 && car_speed_target > closest_speed_ms) {
-        car_speed_target -= 5 * PARAM_MAX_SPEED_INC_MPH;
+        car_speed_target -= 5 * GLOBAL_MAX_SPEED_INC_MPH;
       }
     }
 
@@ -58,7 +58,7 @@ Behavior::Behavior(vector<vector<double>> const &sensor_fusion, CarData car, Pre
     ref_vel_inc = -1;
   } else if (car_speed_target < GLOBAL_MAX_SPEED_MPH) {
     //ref_vel += 2 * .224;
-    car_speed_target += PARAM_MAX_SPEED_INC_MPH;
+    car_speed_target += GLOBAL_MAX_SPEED_INC_MPH;
     car_speed_target = min(car_speed_target, GLOBAL_MAX_SPEED_MPH);
     ref_vel_inc = +1;
   }
@@ -111,18 +111,18 @@ Behavior::Behavior(vector<vector<double>> const &sensor_fusion, CarData car, Pre
   switch (ref_vel_inc)
   {
     case 1:
-      backup_vel.push_back(car_speed_target - PARAM_MAX_SPEED_INC_MPH);
-          backup_vel.push_back(car_speed_target - 2 * PARAM_MAX_SPEED_INC_MPH);
+      backup_vel.push_back(car_speed_target - GLOBAL_MAX_SPEED_INC_MPH);
+          backup_vel.push_back(car_speed_target - 2 * GLOBAL_MAX_SPEED_INC_MPH);
           break;
     case 0: // already max speed
-      backup_vel.push_back(car_speed_target - PARAM_MAX_SPEED_INC_MPH);
+      backup_vel.push_back(car_speed_target - GLOBAL_MAX_SPEED_INC_MPH);
           break;
     case -1:
       // emergency breaking
-      backup_vel.push_back(car_speed_target - PARAM_MAX_SPEED_INC_MPH);
+      backup_vel.push_back(car_speed_target - GLOBAL_MAX_SPEED_INC_MPH);
 
           // emergency acceleration (dangerous here)
-          //backup_vel.push_back(car_speed_target + PARAM_MAX_SPEED_INC_MPH);
+          //backup_vel.push_back(car_speed_target + GLOBAL_MAX_SPEED_INC_MPH);
           break;
     default:
       assert(1 == 0); // something went wrong

@@ -12,10 +12,10 @@ TrajectoryJMT JMT_init(double car_s, double car_d)
 {
     TrajectoryJMT traj_jmt;
     // 50 x {s, s_dot, s_ddot}
-    vector<PointC2> store_path_s(PARAM_NB_POINTS, PointC2(0, 0, 0));
-    vector<PointC2> store_path_d(PARAM_NB_POINTS, PointC2(0, 0, 0));
+    vector<PointC2> store_path_s(GLOBAL_NUM_POINTS, PointC2(0, 0, 0));
+    vector<PointC2> store_path_d(GLOBAL_NUM_POINTS, PointC2(0, 0, 0));
 
-    for (int i = 0; i < PARAM_NB_POINTS; i++) {
+    for (int i = 0; i < GLOBAL_NUM_POINTS; i++) {
         store_path_s[i] = PointC2(car_s, 0, 0);
         store_path_d[i] = PointC2(car_d, 0, 0);
     }
@@ -31,7 +31,7 @@ Trajectory::Trajectory(std::vector<Target> targets, Map &map, CarData &car, Prev
 {
     for (size_t i = 0; i < targets.size(); i++) {
         TrajectoryXY trajectory;
-        if (PARAM_TRAJECTORY_JMT) {
+        if (GLOBAL_TRAJECTORY_JMT) {
             TrajectoryJMT traj_jmt;
 
             // generate JMT trajectory in s and d: converted then to (x,y) for trajectory output
@@ -63,7 +63,7 @@ Trajectory::Trajectory(std::vector<Target> targets, Map &map, CarData &car, Prev
     }
 
     // enforce emergency traj: last one (in case of unavoidable collision we prefer lower speed anyways)
-    if (min_cost_ >= PARAM_COST_FEASIBILITY) {
+    if (min_cost_ >= GLOBAL_COST_FEASIBILITY) {
         min_cost_index_ = costs_.size() - 1;
         min_cost_ = costs_[min_cost_index_].get_cost();
     }
@@ -165,16 +165,16 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
     vector<PointC2> prev_path_s = prev_path_sd.path_s;
     vector<PointC2> prev_path_d = prev_path_sd.path_d;
 
-    vector<PointC2> new_path_s(PARAM_NB_POINTS, PointC2(0,0,0));
-    vector<PointC2> new_path_d(PARAM_NB_POINTS, PointC2(0,0,0));
+    vector<PointC2> new_path_s(GLOBAL_NUM_POINTS, PointC2(0,0,0));
+    vector<PointC2> new_path_d(GLOBAL_NUM_POINTS, PointC2(0,0,0));
 
     //cout << "prev_size=" << prev_size << endl;
-    //int last_point = PARAM_NB_POINTS - prev_size - 1;
+    //int last_point = GLOBAL_NUM_POINTS - prev_size - 1;
     int last_point;
-    if (PARAM_PREV_PATH_XY_REUSED < PARAM_NB_POINTS) {
-        last_point = PARAM_NB_POINTS - previous_path_x.size() + prev_size - 1;
+    if (GLOBAL_PREV_PATH_XY_REUSED < GLOBAL_NUM_POINTS) {
+        last_point = GLOBAL_NUM_POINTS - previous_path_x.size() + prev_size - 1;
     } else {
-        last_point = PARAM_NB_POINTS - 1;
+        last_point = GLOBAL_NUM_POINTS - 1;
     }
 
     double T = target.time; // 2 seconds si car_d center of line
@@ -202,8 +202,8 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
         sf_dot  = mph_to_ms(target.velocity);
 
         // XXX
-        sf_dot = min(sf_dot, si_dot + 10 * PARAM_MAX_SPEED_INC);
-        sf_dot = max(sf_dot, si_dot - 10 * PARAM_MAX_SPEED_INC);
+        sf_dot = min(sf_dot, si_dot + 10 * GLOBAL_MAX_SPEED_INC);
+        sf_dot = max(sf_dot, si_dot - 10 * GLOBAL_MAX_SPEED_INC);
 
         sf      = si + 2 * sf_dot * T;
     } else {
@@ -218,8 +218,8 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
         sf_dot = min(sf_dot, 0.9 * GLOBAL_MAX_SPEED);
 
         // XXX just in case ...
-        sf_dot = min(sf_dot, si_dot + 10 * PARAM_MAX_SPEED_INC);
-        sf_dot = max(sf_dot, si_dot - 10 * PARAM_MAX_SPEED_INC);
+        sf_dot = min(sf_dot, si_dot + 10 * GLOBAL_MAX_SPEED_INC);
+        sf_dot = max(sf_dot, si_dot - 10 * GLOBAL_MAX_SPEED_INC);
 
         sf = si + sf_dot * T;
     }
@@ -239,16 +239,16 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
     vector<double> next_y_vals;
 
     for (int i = 0; i < prev_size; i++) {
-        new_path_s[i] = prev_path_s[PARAM_NB_POINTS - previous_path_x.size() + i];
-        new_path_d[i] = prev_path_d[PARAM_NB_POINTS - previous_path_x.size() + i];
+        new_path_s[i] = prev_path_s[GLOBAL_NUM_POINTS - previous_path_x.size() + i];
+        new_path_d[i] = prev_path_d[GLOBAL_NUM_POINTS - previous_path_x.size() + i];
 
         next_x_vals.push_back(previous_path_x[i]);
         next_y_vals.push_back(previous_path_y[i]);
     }
 
     //double t = 0.0; continuity point reused
-    double t = PARAM_DT;
-    for (int i = prev_size; i < PARAM_NB_POINTS; i++) {
+    double t = GLOBAL_TS;
+    for (int i = prev_size; i < GLOBAL_NUM_POINTS; i++) {
         double s = polyeval(poly_s, t);
         double s_dot = polyeval_dot(poly_s, t);
         double s_ddot = polyeval_ddot(poly_s, t);
@@ -265,7 +265,7 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
         next_x_vals.push_back(point_xy[0]);
         next_y_vals.push_back(point_xy[1]);
 
-        t += PARAM_DT;
+        t += GLOBAL_TS;
     }
 
     traj_jmt.trajectory = TrajectoryXY(next_x_vals, next_y_vals);
@@ -291,8 +291,8 @@ TrajectoryJMT Trajectory::generate_trajectory_sd(Target target, Map &map, CarDat
     vector<PointC2> prev_path_s = prev_path_sd.path_s;
     vector<PointC2> prev_path_d = prev_path_sd.path_d;
 
-    vector<PointC2> new_path_s(PARAM_NB_POINTS, PointC2(0,0,0));
-    vector<PointC2> new_path_d(PARAM_NB_POINTS, PointC2(0,0,0));
+    vector<PointC2> new_path_s(GLOBAL_NUM_POINTS, PointC2(0,0,0));
+    vector<PointC2> new_path_d(GLOBAL_NUM_POINTS, PointC2(0,0,0));
 
     vector<double> next_x_vals;
     vector<double> next_y_vals;
@@ -303,8 +303,8 @@ TrajectoryJMT Trajectory::generate_trajectory_sd(Target target, Map &map, CarDat
     double d, d_dot, d_ddot;
     if (prev_size > 0) {
         for (int i = 0; i < prev_size; i++) {
-            new_path_s[i] = prev_path_s[PARAM_NB_POINTS - previous_path_x.size() + i];
-            new_path_d[i] = prev_path_d[PARAM_NB_POINTS - previous_path_x.size() + i];
+            new_path_s[i] = prev_path_s[GLOBAL_NUM_POINTS - previous_path_x.size() + i];
+            new_path_d[i] = prev_path_d[GLOBAL_NUM_POINTS - previous_path_x.size() + i];
 
             next_x_vals.push_back(previous_path_x[i]);
             next_y_vals.push_back(previous_path_y[i]);
@@ -322,18 +322,18 @@ TrajectoryJMT Trajectory::generate_trajectory_sd(Target target, Map &map, CarDat
     s_ddot = target.accel;  //-GLOBAL_MAX_ACCEL;
 
     //double t = 0.0; continuity point reused
-    double t = PARAM_DT;
+    double t = GLOBAL_TS;
     double prev_s_dot = s_dot;
-    for (int i = prev_size; i < PARAM_NB_POINTS; i++) {
+    for (int i = prev_size; i < GLOBAL_NUM_POINTS; i++) {
 
         // increase/decrease speed till target velocity is reached
-        s_dot += s_ddot * PARAM_DT;
+        s_dot += s_ddot * GLOBAL_TS;
         if ((target.accel > 0 && prev_s_dot <= target_velocity_ms && s_dot > target_velocity_ms) ||
             (target.accel < 0 && prev_s_dot >= target_velocity_ms && s_dot < target_velocity_ms)) {
             s_dot = target_velocity_ms;
         }
         s_dot = max(min(s_dot, 0.9 * GLOBAL_MAX_SPEED), 0.0);
-        s += s_dot * PARAM_DT;
+        s += s_dot * GLOBAL_TS;
 
         prev_s_dot = s_dot;
 
@@ -345,7 +345,7 @@ TrajectoryJMT Trajectory::generate_trajectory_sd(Target target, Map &map, CarDat
         next_x_vals.push_back(point_xy[0]);
         next_y_vals.push_back(point_xy[1]);
 
-        t += PARAM_DT;
+        t += GLOBAL_TS;
     }
 
     traj_jmt.trajectory = TrajectoryXY(next_x_vals, next_y_vals);
@@ -446,8 +446,8 @@ TrajectoryXY Trajectory::generate_trajectory(Target target, Map &map, CarData co
 
     // fill up the rest of our path planner after filing it with previous points
     // here we will always output 50 points
-    for (int i = 1; i <= PARAM_NB_POINTS - prev_size; i++) {
-        double N = (target_dist / (PARAM_DT * mph_to_ms(target.velocity))); // divide by 2.24: mph -> m/s
+    for (int i = 1; i <= GLOBAL_NUM_POINTS - prev_size; i++) {
+        double N = (target_dist / (GLOBAL_TS * mph_to_ms(target.velocity))); // divide by 2.24: mph -> m/s
         double x_point = x_add_on + target_x/N;
         double y_point = spl(x_point);
 

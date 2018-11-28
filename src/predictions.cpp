@@ -25,8 +25,8 @@ Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData co
             vector<Coord> prediction; // vector of at most 6 predicitons of "n_horizon" (x,y) coordinates
             for (int j = 0; j < horizon; j++) {
                 Coord coord;
-                coord.x = x + vx * j*PARAM_DT;
-                coord.y = y + vy * j*PARAM_DT;
+                coord.x = x + vx * j*GLOBAL_TS;
+                coord.y = y + vy * j*GLOBAL_TS;
                 prediction.push_back(coord);
             }
             predictions_[fusion_index] = prediction;
@@ -68,7 +68,7 @@ double Predictions::get_safety_distance(double vel_back, double vel_front, doubl
     double safety_distance = GLOBAL_SD_LC;
     if (vel_back > vel_front) {
         double time_to_decelerate = (vel_back - vel_front) / decel_ + time_latency;
-        safety_distance = vel_back * time_to_decelerate + 1.5 * PARAM_CAR_SAFETY_L;
+        safety_distance = vel_back * time_to_decelerate + 1.5 * GLOBAL_CAR_SAFETY_L;
     }
     safety_distance = max(safety_distance, GLOBAL_SD_LC);  // conservative
     return safety_distance;
@@ -87,14 +87,14 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
     if (vel_ego_ > vel_front_) {
         time_to_collision_ = dist_front_ / (vel_ego_ - vel_front_);
         time_to_decelerate_ = (vel_ego_ - vel_front_) / decel_;
-        safety_distance_ = vel_ego_ * time_to_decelerate_ + 1.75 * PARAM_CAR_SAFETY_L;
+        safety_distance_ = vel_ego_ * time_to_decelerate_ + 1.75 * GLOBAL_CAR_SAFETY_L;
     } else {
         time_to_collision_ = GLOBAL_MAX_DOUBLE;
         time_to_decelerate_ = 0;
-        safety_distance_ = 1.75 * PARAM_CAR_SAFETY_L;
+        safety_distance_ = 1.75 * GLOBAL_CAR_SAFETY_L;
     }
 
-    paranoid_safety_distance_ = vel_ego_ * time_to_stop_ + 2 * PARAM_CAR_SAFETY_L;
+    paranoid_safety_distance_ = vel_ego_ * time_to_stop_ + 2 * GLOBAL_CAR_SAFETY_L;
 
     cout << "SAFETY: D=" << dist_front_ << " dV=" << vel_ego_ - vel_front_ << " TTC=" << time_to_collision_
          << " TTD=" << time_to_decelerate_ << " SD=" << safety_distance_ << " PSD=" << paranoid_safety_distance_ << '\n';
@@ -139,7 +139,7 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
                 lane_free_space_[i] = 0; // too dangerous
             } else {
                 lane_speed_[i] = GLOBAL_MAX_SPEED_MPH;
-                lane_free_space_[i] = PARAM_FOV;
+                lane_free_space_[i] = GLOBAL_FIELD_OF_VIEW;
             }
         }
         cout << "Predictions::lane_speed_[" << i << "]=" << lane_speed_[i] << endl;
@@ -153,8 +153,8 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 // sort of simple scene detection
 vector<int> Predictions::find_closest_objects(vector<vector<double>> const &sensor_fusion, CarData const &car) {
     // Handle FOV and s wraparound
-    double sfov_min = car.s - PARAM_FOV;
-    double sfov_max = car.s + PARAM_FOV;
+    double sfov_min = car.s - GLOBAL_FIELD_OF_VIEW;
+    double sfov_max = car.s + GLOBAL_FIELD_OF_VIEW;
     double sfov_shit = 0;
     if (sfov_min < 0) { // Handle s wrapping
         sfov_shit = -sfov_min;
