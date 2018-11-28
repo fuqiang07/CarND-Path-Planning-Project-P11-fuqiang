@@ -1,5 +1,7 @@
 #include "global.h"
 
+#include <limits>       // std::numeric_limits
+
 using namespace std;
 
 /*
@@ -7,6 +9,9 @@ using namespace std;
  *        Define Global Constants and Variables
  * **************************************************************** *
 */
+//maximum double value
+extern const double GLOBAL_MAX_DOUBLE = numeric_limits<double>::max();	
+
 // define lane width as 4 m 
 const double GLOBAL_LANE_WIDTH = 4.0; // meters
 // Waypoint map to read from
@@ -16,8 +21,22 @@ const double GLOBAL_MAX_S = 6945.554;
 // center point of the track, will be used in Map::getFrenet()
 const double GLOBAL_CENTER_X = 1000;
 const double GLOBAL_CENTER_Y = 2000;
+//the number of lane in the simulation
+extern const unsigned int GLOBAL_NUM_LANES = 3; 
 
+//maximum speed in mph
+extern const double GLOBAL_MAX_SPEED_MPH = 49; 
+//maximum speed in ms
+extern const double GLOBAL_MAX_SPEED = 22;
+//maximum acc in ms2	
+extern const double GLOBAL_MAX_ACCEL = 10;
+//maximum jerk in ms3		
+extern const double GLOBAL_MAX_JERK  = 10; 
 
+// default Safety Distance for Lane Change: will be re-evaluated dynamically
+const double GLOBAL_SD_LC = 10.0;
+// default Safety Distance for current lane: will be re-evaluated dynamically
+const double GLOBAL_SD = 30.0;
 
 /*
  * **************************************************************** *

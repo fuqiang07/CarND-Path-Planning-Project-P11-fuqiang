@@ -11,13 +11,22 @@ using namespace std;
  *        Declare Global Constants and Variables
  * **************************************************************** *
 */
+extern const double GLOBAL_MAX_DOUBLE;		//maximum double value
 
-
-extern const double GLOBAL_LANE_WIDTH;	//lane width
-extern const string GLOBAL_MAP_FILE;	//waypoint map file 
-extern const double GLOBAL_MAX_S;		//max s value in the map
-extern const double GLOBAL_CENTER_X;	//center point of the track
+extern const double GLOBAL_LANE_WIDTH;		//lane width
+extern const string GLOBAL_MAP_FILE;		//waypoint map file 
+extern const double GLOBAL_MAX_S;			//max s value in the map
+extern const double GLOBAL_CENTER_X;		//center point of the track
 extern const double GLOBAL_CENTER_Y;	
+extern const unsigned int GLOBAL_NUM_LANES; //the number of lane in the simulation
+
+extern const double GLOBAL_MAX_SPEED_MPH; 	//maximum speed in mph
+extern const double GLOBAL_MAX_SPEED; 		//maximum speed in ms
+extern const double GLOBAL_MAX_ACCEL; 		//maximum acc in ms2
+extern const double GLOBAL_MAX_JERK; 		//maximum jerk in ms3
+
+extern const double GLOBAL_SD_LC;			//safety distance for lane change		
+extern const double GLOBAL_SD; 				//safety distance for current lane keeping
 
 //to store data related to car
 struct CarData {
@@ -34,6 +43,13 @@ struct CarData {
            double V=0, double VF=0, double L=0, bool E=false) : x(X), y(Y), s(S), yaw(YAW), 
            speed(V), speed_target(VF), lane(L), emergency(E) {}
 };
+
+//to store coordinate values 
+struct Coord {
+  double x;
+  double y;
+};
+
 
 /*
  * **************************************************************** *
@@ -57,7 +73,7 @@ unsigned int getLaneID(double car_d);
 
 
 /* // Computationnal defines
-#define INF 1e10
+
 
 enum {
   ID = 0, // 0
@@ -70,10 +86,7 @@ enum {
   SIZE    // 7
 };
 
-struct Coord {
-  double x;
-  double y;
-};
+
 
 struct Frenet {
   double s;
@@ -108,15 +121,9 @@ const double PARAM_DT = 0.02; // 1 point every 0.02 s
 
 const double PARAM_LANE_WIDTH = 4.0; // meters
 
-const double PARAM_MAX_SPEED_MPH = 49;
-
-const double PARAM_MAX_SPEED = 22; // m.s-1
-const double PARAM_MAX_ACCEL = 10; // m.s-2
-const double PARAM_MAX_JERK  = 10; // m.s-3 average jerk over 1 second
-
 const double PARAM_FOV = 70.0; // Field Of View
 
-const double PARAM_MAX_SPEED_INC = PARAM_MAX_ACCEL * PARAM_DT; // m.s-1 per 0.02 sec
+const double PARAM_MAX_SPEED_INC = GLOBAL_MAX_ACCEL * PARAM_DT; // m.s-1 per 0.02 sec
 const double PARAM_MAX_SPEED_INC_MPH = ms_to_mph(PARAM_MAX_SPEED_INC);
 
 const double PARAM_DIST_SAFETY = 3.5; // meters
@@ -139,11 +146,9 @@ const int PARAM_COST_LEGALITY    = 100; // vs speed limits
 const int PARAM_COST_COMFORT     = 10; // vs jerk
 const int PARAM_COST_EFFICIENCY  = 1; // vs target lane, target speed and time to goal
 
-const int PARAM_NB_LANES = 3;
 
-// default Safety Distance for Lane Change: will be re-evaluated dynamically
-const double PARAM_SD_LC = 10.0;
-// default Safety Distance: will be re-evaluated dynamically
-const double PARAM_SD = 30.0; */
+*/
+
+
 
 #endif

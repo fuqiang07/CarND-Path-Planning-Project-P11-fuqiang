@@ -13,24 +13,24 @@ using Eigen::Vector2d;
 // to identify collision between 2 convex rectangular objects
 // cf http://www.dyn4j.org/2010/01/sat/
 // ------------------------------------------------------------
-bool Cost::check_collision(double x0, double y0, double theta0, double x1, double y1, double theta1) 
+bool Cost::check_collision(double x0, double y0, double theta0, double x1, double y1, double theta1)
 {
-  Vector2d trans0; 
+  Vector2d trans0;
   trans0 << x0, y0;
-  Vector2d trans1; 
+  Vector2d trans1;
   trans1 << x1, y1;
   Matrix2d rot0, rot1;
   rot0 << cos(theta0), -sin(theta0),
           sin(theta0),  cos(theta0);
   rot1 << cos(theta1), -sin(theta1),
           sin(theta1),  cos(theta1);
-  
+
   double W = PARAM_CAR_SAFETY_W; //2;
   double L = PARAM_CAR_SAFETY_L; //5;
 
   MatrixXd car(2,4);
   car << -L/2, L/2,  L/2, -L/2,
-          W/2, W/2, -W/2, -W/2; 
+          W/2, W/2, -W/2, -W/2;
 
   MatrixXd car0(2,4);
   MatrixXd car1(2,4);
@@ -42,7 +42,7 @@ bool Cost::check_collision(double x0, double y0, double theta0, double x1, doubl
 
   // principal axis list
   MatrixXd axis(2,4);
-  axis << cos(theta0), -sin(theta0), cos(theta1), -sin(theta1), 
+  axis << cos(theta0), -sin(theta0), cos(theta1), -sin(theta1),
           sin(theta0),  cos(theta0), sin(theta1),  cos(theta1);
 
   for (int i = 0; i < axis.cols(); i++) {
@@ -82,36 +82,36 @@ bool Cost::check_collision(double x0, double y0, double theta0, double x1, doubl
 
 int Cost::check_collision_on_trajectory(TrajectoryXY const &trajectory, std::map<int, vector<Coord> > &predictions)
 {
-  std::map<int, vector<Coord> >::iterator it = predictions.begin();
-  while(it != predictions.end()) {
-    int fusion_index = it->first;
-    vector<Coord> prediction = it->second;
+std::map<int, vector<Coord> >::iterator it = predictions.begin();
+while(it != predictions.end()) {
+int fusion_index = it->first;
+vector<Coord> prediction = it->second;
 
-    assert(prediction.size() == trajectory.x_vals.size());
-    assert(prediction.size() == trajectory.y_vals.size());
+assert(prediction.size() == trajectory.x_vals.size());
+assert(prediction.size() == trajectory.y_vals.size());
 
-    for (int i = 0; i < PARAM_MAX_COLLISION_STEP; i++) { // up to 50 (x,y) coordinates
-      double obj_x = prediction[i].x;
-      double obj_y = prediction[i].y;
-      double obj_x_next = prediction[i+1].x;
-      double obj_y_next = prediction[i+1].y;
-      double obj_heading = atan2(obj_y_next - obj_y, obj_x_next - obj_x);
+for (int i = 0; i < PARAM_MAX_COLLISION_STEP; i++) { // up to 50 (x,y) coordinates
+double obj_x = prediction[i].x;
+double obj_y = prediction[i].y;
+double obj_x_next = prediction[i+1].x;
+double obj_y_next = prediction[i+1].y;
+double obj_heading = atan2(obj_y_next - obj_y, obj_x_next - obj_x);
 
-      double ego_x = trajectory.x_vals[i];
-      double ego_y = trajectory.y_vals[i];
-      double ego_x_next = trajectory.x_vals[i+1];
-      double ego_y_next = trajectory.y_vals[i+1];
-      double ego_heading = atan2(ego_y_next - ego_y, ego_x_next - ego_x);
+double ego_x = trajectory.x_vals[i];
+double ego_y = trajectory.y_vals[i];
+double ego_x_next = trajectory.x_vals[i+1];
+double ego_y_next = trajectory.y_vals[i+1];
+double ego_heading = atan2(ego_y_next - ego_y, ego_x_next - ego_x);
 
-      if (check_collision(obj_x, obj_y, obj_heading, ego_x, ego_y, ego_heading)) {
-        cout << "!!! ... COLLISION predicted on candidate trajectory at step " << i << "  ... !!!" << endl;
-        return (i+1);
-      }
-    }
-    it++;
-  }
+if (check_collision(obj_x, obj_y, obj_heading, ego_x, ego_y, ego_heading)) {
+cout << "!!! ... COLLISION predicted on candidate trajectory at step " << i << "  ... !!!" << endl;
+return (i+1);
+}
+}
+it++;
+}
 
-  return 0;
+return 0;
 }
 
 
@@ -172,7 +172,7 @@ bool Cost::check_max_capabilities(vector<vector<double>> &traj)
 
   jerk_per_second = total_jerk / (PARAM_NB_POINTS * PARAM_DT);
 
-  if (roundf(max_vel) > PARAM_MAX_SPEED || roundf(max_acc) > PARAM_MAX_ACCEL || jerk_per_second > PARAM_MAX_JERK) {
+  if (roundf(max_vel) > GLOBAL_MAX_SPEED || roundf(max_acc) > GLOBAL_MAX_ACCEL || jerk_per_second > GLOBAL_MAX_JERK) {
     cout << "max_vel=" << max_vel << " max_acc=" << max_acc << " jerk_per_second=" << jerk_per_second  << endl;
     //assert(1 == 0);
     return true;
@@ -184,34 +184,34 @@ bool Cost::check_max_capabilities(vector<vector<double>> &traj)
 
 double Cost::get_predicted_dmin(TrajectoryXY const &trajectory, std::map<int, vector<Coord> > &predictions)
 {
-  double dmin = INF;
+double dmin = GLOBAL_MAX_DOUBLE;
 
-  std::map<int, vector<Coord> >::iterator it = predictions.begin();
-  while(it != predictions.end())
-  {
-    int fusion_index = it->first;
-    //cout << "fusion_index=" << fusion_index << endl;
-    vector<Coord> prediction = it->second;
+std::map<int, vector<Coord> >::iterator it = predictions.begin();
+while(it != predictions.end())
+{
+int fusion_index = it->first;
+//cout << "fusion_index=" << fusion_index << endl;
+vector<Coord> prediction = it->second;
 
-    assert(prediction.size() == trajectory.x_vals.size());
-    assert(prediction.size() == trajectory.y_vals.size());
+assert(prediction.size() == trajectory.x_vals.size());
+assert(prediction.size() == trajectory.y_vals.size());
 
-    for (size_t i = 0; i < prediction.size(); i++) { // up to 50 (x,y) coordinates
-      double obj_x = prediction[i].x;
-      double obj_y = prediction[i].y;
-      double ego_x = trajectory.x_vals[i];
-      double ego_y = trajectory.y_vals[i];
+for (size_t i = 0; i < prediction.size(); i++) { // up to 50 (x,y) coordinates
+double obj_x = prediction[i].x;
+double obj_y = prediction[i].y;
+double ego_x = trajectory.x_vals[i];
+double ego_y = trajectory.y_vals[i];
 
-      double dist = distance(ego_x, ego_y, obj_x, obj_y);
-      if (dist < dmin) {
-        dmin = dist;
-      }
-    }
-    it++;
-  }
+double dist = distance(ego_x, ego_y, obj_x, obj_y);
+if (dist < dmin) {
+dmin = dist;
+}
+}
+it++;
+}
 
-  cout << "=====> dmin = " << dmin << endl;
-  return dmin;
+cout << "=====> dmin = " << dmin << endl;
+return dmin;
 }
 
 
@@ -252,11 +252,11 @@ Cost::Cost(TrajectoryXY const &trajectory, Target target, Predictions &predict, 
   cost_ = cost_ + PARAM_COST_COMFORT * cost_comfort;
 
   // 5) EFFICIENCY cost
-  //cost_efficiency = PARAM_MAX_SPEED_MPH - target.velocity;
-  //cost_efficiency = PARAM_MAX_SPEED_MPH - predictions_lane_speed[target.lane];
+  //cost_efficiency = GLOBAL_MAX_SPEED_MPH - target.velocity;
+  //cost_efficiency = GLOBAL_MAX_SPEED_MPH - predictions_lane_speed[target.lane];
 
   // sensor_fusion speed in m/s !!!
-  //cost_efficiency = PARAM_MAX_SPEED - predictions_lane_speed[target.lane];
+  //cost_efficiency = GLOBAL_MAX_SPEED - predictions_lane_speed[target.lane];
   cost_efficiency = PARAM_FOV - predict.get_lane_free_space(target.lane);
   cost_ = cost_ + PARAM_COST_EFFICIENCY * cost_efficiency;
 
@@ -265,7 +265,7 @@ Cost::Cost(TrajectoryXY const &trajectory, Target target, Predictions &predict, 
 
 Cost::~Cost() {}
 
-double Cost::get_cost() 
+double Cost::get_cost()
 {
   return cost_;
 }
