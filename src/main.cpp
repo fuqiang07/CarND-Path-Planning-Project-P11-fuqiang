@@ -11,6 +11,10 @@
 
 #include "map.h"
 #include "global.h"
+#include "predictions.h"
+#include "behavior.h"
+#include "trajectory.h"
+#include "cost.h"
 
 using namespace std;
 
@@ -59,7 +63,8 @@ int main() {
      * **************************************************************** *
      */
 
-    h.onMessage([&map](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+    h.onMessage([&map, &car, &start, &prev_path_sd](uWS::WebSocket<uWS::SERVER> ws, 
+	char *data, size_t length, uWS::OpCode opCode) {
         // "42" at the start of the message means there's a websocket message event.
         // The 4 signifies a websocket message
         // The 2 signifies a websocket event
