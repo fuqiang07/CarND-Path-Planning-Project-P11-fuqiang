@@ -13,11 +13,11 @@ using namespace std;
 */
 
 
-extern static const double GLOBAL_LANE_WIDTH;	//lane width
-extern static const string GLOBAL_MAP_FILE;	//waypoint map file 
-extern static const double GLOBAL_MAX_S;		//max s value in the map
-extern static const double GLOBAL_CENTER_X;	//center point of the track
-extern static const double GLOBAL_CENTER_Y;	
+extern const double GLOBAL_LANE_WIDTH;	//lane width
+extern const string GLOBAL_MAP_FILE;	//waypoint map file 
+extern const double GLOBAL_MAX_S;		//max s value in the map
+extern const double GLOBAL_CENTER_X;	//center point of the track
+extern const double GLOBAL_CENTER_Y;	
 
 
 
