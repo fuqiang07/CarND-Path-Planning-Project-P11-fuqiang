@@ -1,7 +1,5 @@
 #include "global.h"
 
-#include <math.h>
-
 using namespace std;
 
 /*
@@ -85,7 +83,6 @@ double get_dcenter(int lane) {
   return dcenter;
 }
 
-/* int get_lane(double d) {
+// int get_lane(double d) {
   return (int)(d / PARAM_LANE_WIDTH);
 } */
- */
