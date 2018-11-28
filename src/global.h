@@ -12,13 +12,13 @@ using namespace std;
  * **************************************************************** *
 */
 
-struct Constants {
-    static const double GLOBAL_LANE_WIDTH;	//lane width
-    static const string GLOBAL_MAP_FILE;	//waypoint map file 
-	static const double GLOBAL_MAX_S;		//max s value in the map
-	static const double GLOBAL_CENTER_X;	//center point of the track
-	static const double GLOBAL_CENTER_Y;	
-};
+
+extern static const double GLOBAL_LANE_WIDTH;	//lane width
+extern static const string GLOBAL_MAP_FILE;	//waypoint map file 
+extern static const double GLOBAL_MAX_S;		//max s value in the map
+extern static const double GLOBAL_CENTER_X;	//center point of the track
+extern static const double GLOBAL_CENTER_Y;	
+
 
 
 /*

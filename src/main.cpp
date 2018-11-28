@@ -19,8 +19,6 @@ using namespace std;
 // for convenience
 using json = nlohmann::json;
 
-Constants global_const;
-
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
 // else the empty string "" will be returned.
