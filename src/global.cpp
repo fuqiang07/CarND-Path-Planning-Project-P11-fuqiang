@@ -28,7 +28,7 @@ const double GLOBAL_MAX_S = 6945.554;
 const double GLOBAL_CENTER_X = 1000;
 const double GLOBAL_CENTER_Y = 2000;
 //the number of lane in the simulation
-const unsigned int GLOBAL_NUM_LANES = 3; 
+const int GLOBAL_NUM_LANES = 3; 
 
 //maximum speed in mph
 const double GLOBAL_MAX_SPEED_MPH = 49; 

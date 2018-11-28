@@ -21,7 +21,7 @@ extern const string GLOBAL_MAP_FILE;		//waypoint map file
 extern const double GLOBAL_MAX_S;			//max s value in the map
 extern const double GLOBAL_CENTER_X;		//center point of the track
 extern const double GLOBAL_CENTER_Y;	
-extern const unsigned int GLOBAL_NUM_LANES; //the number of lane in the simulation
+extern const int GLOBAL_NUM_LANES; //the number of lane in the simulation
 
 extern const double GLOBAL_MAX_SPEED_MPH; 	//maximum speed in mph
 extern const double GLOBAL_MAX_SPEED; 		//maximum speed in ms
