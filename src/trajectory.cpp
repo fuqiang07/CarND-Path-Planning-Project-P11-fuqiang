@@ -199,7 +199,7 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
         df      = di;
 
         sf_ddot = 0;
-        sf_dot  = mph_to_ms(target.velocity);
+        sf_dot  = mph2ms(target.velocity);
 
         // XXX
         sf_dot = min(sf_dot, si_dot + 10 * GLOBAL_MAX_SPEED_INC);
@@ -212,7 +212,7 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
         df      = get_dcenter(target.lane);
 
         sf_ddot = 0;
-        sf_dot = mph_to_ms(target.velocity);
+        sf_dot = mph2ms(target.velocity);
         // we use JMT for lane changes only
         // no need to try to reach amx speed during lane changes
         sf_dot = min(sf_dot, 0.9 * GLOBAL_MAX_SPEED);
@@ -297,7 +297,7 @@ TrajectoryJMT Trajectory::generate_trajectory_sd(Target target, Map &map, CarDat
     vector<double> next_x_vals;
     vector<double> next_y_vals;
 
-    double target_velocity_ms = mph_to_ms(target.velocity);
+    double target_velocity_ms = mph2ms(target.velocity);
 
     double s, s_dot, s_ddot;
     double d, d_dot, d_ddot;
@@ -447,7 +447,7 @@ TrajectoryXY Trajectory::generate_trajectory(Target target, Map &map, CarData co
     // fill up the rest of our path planner after filing it with previous points
     // here we will always output 50 points
     for (int i = 1; i <= GLOBAL_NUM_POINTS - prev_size; i++) {
-        double N = (target_dist / (GLOBAL_TS * mph_to_ms(target.velocity))); // divide by 2.24: mph -> m/s
+        double N = (target_dist / (GLOBAL_TS * mph2ms(target.velocity))); // divide by 2.24: mph -> m/s
         double x_point = x_add_on + target_x/N;
         double y_point = spl(x_point);
 

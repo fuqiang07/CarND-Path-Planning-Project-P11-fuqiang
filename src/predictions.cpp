@@ -40,14 +40,6 @@ Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData co
 Predictions::~Predictions() {}
 
 
-//double get_sdistance(double s1, double s2)
-//{
-//  // account for s wraparound at MAX_S
-//  double sdistance = min( fabs(s1 - s2), min(fabs((s1+MAX_S) - s2), fabs(s1 - (s2+MAX_S))) );
-//  return sdistance;
-//}
-
-
 double get_sensor_fusion_vel(vector<vector<double>> const &sensor_fusion, int idx, double default_vel)
 {
 double vx, vy, vel;
@@ -76,7 +68,7 @@ double Predictions::get_safety_distance(double vel_back, double vel_front, doubl
 
 void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusion, CarData const &car)
 {
-    vel_ego_ = mph_to_ms(car.speed);  // velocity of ego vehicle
+    vel_ego_ = mph2ms(car.speed);  // velocity of ego vehicle
     // slightly conservative as it will relate to safety distance
     decel_ = 0.8 * GLOBAL_MAX_ACCEL;
     time_to_stop_ = vel_ego_ / decel_;
@@ -158,13 +150,13 @@ vector<int> Predictions::find_closest_objects(vector<vector<double>> const &sens
     double sfov_shit = 0;
     if (sfov_min < 0) { // Handle s wrapping
         sfov_shit = -sfov_min;
-    } else if (sfov_max > MAX_S) {
-        sfov_shit = MAX_S - sfov_max;
+    } else if (sfov_max > GLOBAL_MAX_S) {
+        sfov_shit = GLOBAL_MAX_S - sfov_max;
     }
     sfov_min += sfov_shit;
     sfov_max += sfov_shit;
-    assert(sfov_min >= 0 && sfov_min <= MAX_S);
-    assert(sfov_max >= 0 && sfov_max <= MAX_S);
+    assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
+    assert(sfov_max >= 0 && sfov_max <= GLOBAL_MAX_S);
 
     double car_s = car.s;
 
