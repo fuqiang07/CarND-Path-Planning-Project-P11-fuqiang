@@ -21,7 +21,7 @@ extern const string GLOBAL_MAP_FILE;		//waypoint map file
 extern const double GLOBAL_MAX_S;			//max s value in the map
 extern const double GLOBAL_CENTER_X;		//center point of the track
 extern const double GLOBAL_CENTER_Y;	
-extern const int GLOBAL_NUM_LANES; //the number of lane in the simulation
+extern const int GLOBAL_NUM_LANES; 			//the number of lane in the simulation
 
 extern const double GLOBAL_MAX_SPEED_MPH; 	//maximum speed in mph
 extern const double GLOBAL_MAX_SPEED; 		//maximum speed in ms
@@ -92,5 +92,12 @@ double distance(double x1, double y1, double x2, double y2);
 
 // Get lane ID based on the d value of the car
 unsigned int get_lane(double car_d);
+
+// d coord for "left lane" of a lane
+double get_dleft(int lane);
+// d coord for "right lane" of a lane
+double get_dright(int lane);
+// d coord for "center lane" of a lane
+double get_dcenter(int lane);
 
 #endif
