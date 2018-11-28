@@ -19,7 +19,21 @@ extern const double GLOBAL_MAX_S;		//max s value in the map
 extern const double GLOBAL_CENTER_X;	//center point of the track
 extern const double GLOBAL_CENTER_Y;	
 
-
+//to store data related to car
+struct CarData {
+  double x;
+  double y;
+  double s;
+  double d;
+  double yaw;
+  double speed;
+  double speed_target;
+  int    lane;
+  bool   emergency;
+  CarData (double X=0, double Y=0, double S=0, double D=0, double YAW=0, 
+           double V=0, double VF=0, double L=0, bool E=false) : x(X), y(Y), s(S), yaw(YAW), 
+           speed(V), speed_target(VF), lane(L), emergency(E) {}
+};
 
 /*
  * **************************************************************** *
@@ -67,20 +81,7 @@ struct Frenet {
 };
 
 
-struct CarData {
-  double x;
-  double y;
-  double s;
-  double d;
-  double yaw;
-  double speed;
-  double speed_target;
-  int    lane;
-  bool   emergency;
-  CarData (double X=0, double Y=0, double S=0, double D=0, double YAW=0, 
-           double V=0, double VF=0, double L=0, bool E=false) : x(X), y(Y), s(S), yaw(YAW), 
-           speed(V), speed_target(VF), lane(L), emergency(E) {}
-};
+
 
 typedef std::vector<double > t_coord;
 typedef std::vector<t_coord> t_traj;
