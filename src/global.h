@@ -4,24 +4,25 @@
 #include <vector>
 #include <string>
 
+using namespace std;
 /*
  * **************************************************************** *
- *        Define Global Constants and Variables
+ *        Declare Global Constants and Variables
  * **************************************************************** *
 */
-// define lane width as 4 m 
-const double GLOBAL_LANE_WIDTH = 4.0; // meters
-// Waypoint map to read from
-const string GLOBAL_MAP_FILE = "../data/highway_map.csv";
-// The max s value before wrapping around the track back to 0
-const double GLOBAL_MAX_S = 6945.554;
-// center point of the track, will be used in Map::getFrenet()
-const double GLOBAL_CENTER_X = 1000;
-const double GLOBAL_CENTER_Y = 2000;
+
+struct Constants {
+    static const double GLOBAL_LANE_WIDTH;	//lane width
+    static const string GLOBAL_MAP_FILE;	//waypoint map file 
+	static const double GLOBAL_MAX_S;		//max s value in the map
+	static const double GLOBAL_CENTER_X;	//center point of the track
+	static const double GLOBAL_CENTER_Y;	
+};
+
 
 /*
  * **************************************************************** *
- *        Define Helper Functions
+ *        Declare Helper Functions
  * **************************************************************** *
 */
 // For converting back and forth between radians and degrees.
@@ -40,7 +41,7 @@ unsigned int getLaneID(double car_d);
 
 
 
-// Computationnal defines
+/* // Computationnal defines
 #define INF 1e10
 
 enum {
@@ -141,6 +142,6 @@ const int PARAM_NB_LANES = 3;
 // default Safety Distance for Lane Change: will be re-evaluated dynamically
 const double PARAM_SD_LC = 10.0;
 // default Safety Distance: will be re-evaluated dynamically
-const double PARAM_SD = 30.0;
+const double PARAM_SD = 30.0; */
 
 #endif

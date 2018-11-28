@@ -1,5 +1,25 @@
-#include <math.h>
 #include "global.h"
+
+#include <math.h>
+
+using namespace std;
+
+/*
+ * **************************************************************** *
+ *        Define Global Constants and Variables
+ * **************************************************************** *
+*/
+// define lane width as 4 m 
+const double GLOBAL_LANE_WIDTH = 4.0; // meters
+// Waypoint map to read from
+const string GLOBAL_MAP_FILE = "../data/highway_map.csv";
+// The max s value before wrapping around the track back to 0
+const double GLOBAL_MAX_S = 6945.554;
+// center point of the track, will be used in Map::getFrenet()
+const double GLOBAL_CENTER_X = 1000;
+const double GLOBAL_CENTER_Y = 2000;
+
+
 
 /*
  * **************************************************************** *
