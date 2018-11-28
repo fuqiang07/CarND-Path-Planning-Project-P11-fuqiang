@@ -41,7 +41,7 @@ const double GLOBAL_MAX_JERK  = 10;
 //speed increment in ms2
 const double GLOBAL_MAX_SPEED_INC = GLOBAL_MAX_ACCEL * GLOBAL_TS; 
 //speed increment in mph
-const double GLOBAL_MAX_SPEED_INC_MPH = ms_to_mph(GLOBAL_MAX_SPEED_INC);
+const double GLOBAL_MAX_SPEED_INC_MPH = ms2mph(GLOBAL_MAX_SPEED_INC);
 
 // default Safety Distance for Lane Change: will be re-evaluated dynamically
 const double GLOBAL_SD_LC = 10.0;
