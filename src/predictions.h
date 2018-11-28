@@ -45,8 +45,8 @@ private:
 
     // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
     std::map< int, std::vector<Coord> > predictions_;
-    double lane_speed_[GLOBAL_NUM_LANES];
-    double lane_free_space_[GLOBAL_NUM_LANES];
+    double lane_speed_[3];
+    double lane_free_space_[3];
 
     // safety distance computation related
     double vel_ego_;
