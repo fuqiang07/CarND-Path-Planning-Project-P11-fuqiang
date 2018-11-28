@@ -4,8 +4,45 @@
 #include <vector>
 #include <string>
 
+/*
+ * **************************************************************** *
+ *        Define Global Constants and Variables
+ * **************************************************************** *
+*/
+// define lane width as 4 m 
+const double GLOBAL_LANE_WIDTH = 4.0; // meters
+// Waypoint map to read from
+const string GLOBAL_MAP_FILE = "../data/highway_map.csv";
+// The max s value before wrapping around the track back to 0
+const double GLOBAL_MAX_S = 6945.554;
+// center point of the track, will be used in Map::getFrenet()
+const double GLOBAL_CENTER_X = 1000;
+const double GLOBAL_CENTER_Y = 2000;
+
+/*
+ * **************************************************************** *
+ *        Define Helper Functions
+ * **************************************************************** *
+*/
+// For converting back and forth between radians and degrees.
+constexpr double pi();
+double deg2rad(double x);
+double rad2deg(double x);
+// For converting back and forth between mph and ms.
+double mph2ms(double vel_mph);
+double ms2mph(double vel_ms);
+
+// Calculate distance between two points
+double distance(double x1, double y1, double x2, double y2);
+
+// Get lane ID based on the d value of the car
+unsigned int getLaneID(double car_d);
+
+
+
 // Computationnal defines
 #define INF 1e10
+
 enum {
   ID = 0, // 0
   X  = 1, // 1
@@ -48,11 +85,6 @@ typedef std::vector<t_coord> t_traj;
 typedef std::vector<t_traj > t_trajSet;
 
 
-// For converting back and forth between radians and degrees.
-double deg2rad(double x);
-double rad2deg(double x);
-double mph_to_ms(double mph); // m.s-1
-double ms_to_mph(double ms);
 
 // d coord for "left lane" of a lane
 double get_dleft(int lane);
@@ -63,19 +95,9 @@ double get_dcenter(int lane);
 
 int get_lane(double d);
 
-double distance(double x1, double y1, double x2, double y2);
-
-const bool PARAM_MAP_BOSCH = true;
-
 extern std::string map_file_; 
 
-// The max s value before wrapping around the track back to 0
-const double MAXIMUM_S = 6945.554;
-extern double MAX_S;
 
-// center point of the track
-const double PARAM_CENTER_X = 1000;
-const double PARAM_CENTER_Y = 2000;
 
 
 const int PARAM_NB_POINTS = 50; // in the trajectory sent to simulator
@@ -120,8 +142,5 @@ const int PARAM_NB_LANES = 3;
 const double PARAM_SD_LC = 10.0;
 // default Safety Distance: will be re-evaluated dynamically
 const double PARAM_SD = 30.0;
-
-// Waypoint map to read from
-std::string map_file_ = "../data/highway_map.csv";
 
 #endif

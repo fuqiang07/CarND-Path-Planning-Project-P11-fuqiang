@@ -1,12 +1,46 @@
 #include <math.h>
 #include "global.h"
 
+/*
+ * **************************************************************** *
+ *        Define Helper Functions
+ * **************************************************************** *
+*/
+// For converting back and forth between radians and degrees.
+constexpr double pi() { return M_PI; }
+double deg2rad(double x) { return x * pi() / 180; }
+double rad2deg(double x) { return x * 180 / pi(); }
+// For converting back and forth between mph and ms.
+double mph2ms(double vel_mph) { return vel_mph  / 2.23694; }
+double ms2mph(double vel_ms) { return vel_ms * 2.23694; }
+
+// Calculate distance between two points
+double distance(double x1, double y1, double x2, double y2) {
+	return sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+}
+
+// Get lane ID based on the d value of the car
+unsigned int getLaneID(double car_d)
+{
+    unsigned int uLaneId = 0;
+
+    if ((car_d >= 0.0) and (car_d < GLOBAL_LANE_WIDTH) )
+    {
+        uLaneId = 1;
+    }
+    else if ((car_d >= GLOBAL_LANE_WIDTH) and (car_d < GLOBAL_LANE_WIDTH * 2) )
+    {
+        uLaneId = 2;
+    }
+    else if ((car_d >= GLOBAL_LANE_WIDTH * 2) and (car_d < GLOBAL_LANE_WIDTH * 3) )
+    {
+        uLaneId = 3;
+    }
+
+    return uLaneId;
+}
 
 
-double deg2rad(double x) { return x * M_PI / 180; }
-double rad2deg(double x) { return x * 180 / M_PI; }
-double mph_to_ms(double mph) { return mph / 2.24; } // m.s-1
-double ms_to_mph(double ms) { return ms * 2.24; } // mph
 
 // d coord for left lane
 double get_dleft(int lane) {
@@ -32,10 +66,7 @@ double get_dcenter(int lane) {
   return dcenter;
 }
 
-int get_lane(double d) {
+/* int get_lane(double d) {
   return (int)(d / PARAM_LANE_WIDTH);
-}
+} */
 
-double distance(double x1, double y1, double x2, double y2) {
-	return sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
-}
