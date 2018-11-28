@@ -158,8 +158,7 @@ int main() {
      */
 	 
 	 Map map;
-	 map.init(global_const.GLOBAL_MAP_FILE, global_const.GLOBAL_MAX_S,
-	 global_const.GLOBAL_CENTER_X, global_const.GLOBAL_CENTER_Y);
+	 map.init(GLOBAL_MAP_FILE, GLOBAL_MAX_S, GLOBAL_CENTER_X, GLOBAL_CENTER_Y);
 	 map.read();     
 
     h.onMessage([&map](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {

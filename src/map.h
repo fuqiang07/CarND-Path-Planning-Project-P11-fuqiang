@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "spline.h"
-#include "global.h"
 
 using namespace std;
 using namespace tk;
