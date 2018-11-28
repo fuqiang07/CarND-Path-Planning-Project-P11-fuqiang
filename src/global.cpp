@@ -62,7 +62,7 @@ unsigned int getLaneID(double car_d)
 
 
 
-// d coord for left lane
+/* // d coord for left lane
 double get_dleft(int lane) {
   double dleft = lane * PARAM_LANE_WIDTH;
   return dleft;
@@ -89,4 +89,4 @@ double get_dcenter(int lane) {
 /* int get_lane(double d) {
   return (int)(d / PARAM_LANE_WIDTH);
 } */
-
+ */

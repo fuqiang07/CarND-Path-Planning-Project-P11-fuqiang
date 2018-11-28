@@ -52,7 +52,7 @@ class Map {
   /*
   * Initialize MAP.
   */
-  void init(const string& map_file, const double& max_s);
+  void init(const string& map_file, const double& max_s, const double& center_x, const double& center_y);
    /*
   * Read MAP from file.
   */ 
@@ -66,6 +66,10 @@ class Map {
   vector<double> getXY(double s, double d);
   vector<double> getXYspline(double s, double d); // with splines
   double getSpeedToFrenet(double Vxy, double s);
+  
+  private:
+  double center_x_;
+  double center_y_;
 
 };
 

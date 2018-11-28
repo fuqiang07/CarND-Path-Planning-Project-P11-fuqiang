@@ -19,6 +19,8 @@ using namespace std;
 // for convenience
 using json = nlohmann::json;
 
+Constants global_const;
+
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
 // else the empty string "" will be returned.
@@ -156,9 +158,10 @@ int main() {
      *        My code here:
      * **************************************************************** *
      */
-	 Constants global_const;
+	 
 	 Map map;
-	 map.init(global_const.GLOBAL_MAP_FILE, global_const.GLOBAL_MAX_S);
+	 map.init(global_const.GLOBAL_MAP_FILE, global_const.GLOBAL_MAX_S,
+	 global_const.GLOBAL_CENTER_X, global_const.GLOBAL_CENTER_Y);
 	 map.read();     
 
     h.onMessage([&map](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {

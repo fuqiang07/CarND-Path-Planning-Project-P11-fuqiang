@@ -18,10 +18,13 @@ Map::~Map() {}
 /*
 * Initialize Map.
 */
-void Map::init(const string& map_file, const double& max_s)
+void Map::init(const string& map_file, const double& max_s,
+ const double& center_x, const double& center_y)
 {
 	map_file_ = map_file;
 	max_s_ = max_s;
+	center_x_ = center_x;
+	center_y_ = center_y;
 }
 
 
@@ -197,8 +200,8 @@ vector<double> Map::getFrenet(double x, double y, double theta)
 
     //see if d value is positive or negative by comparing it to a center point
 
-    double center_x = GLOBAL_CENTER_X-maps_x[prev_wp];
-    double center_y = GLOBAL_CENTER_Y-maps_y[prev_wp];
+    double center_x = center_x_-maps_x[prev_wp];
+    double center_y = center_y_-maps_y[prev_wp];
     double centerToPos = distance(center_x,center_y,x_x,x_y);
     double centerToRef = distance(center_x,center_y,proj_x,proj_y);
 
