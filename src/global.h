@@ -26,7 +26,7 @@ struct Constants {
  * **************************************************************** *
 */
 // For converting back and forth between radians and degrees.
-constexpr double pi();
+constexpr double pi() { return M_PI; }
 double deg2rad(double x);
 double rad2deg(double x);
 // For converting back and forth between mph and ms.
