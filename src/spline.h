@@ -111,6 +111,7 @@ namespace
             void set_points(const std::vector<double>& x,
                             const std::vector<double>& y, bool cubic_spline=true);
             double operator() (double x) const;
+			double deriv(int order, double x) const;
         };
 
 
