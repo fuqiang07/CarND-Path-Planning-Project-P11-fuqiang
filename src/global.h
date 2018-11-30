@@ -4,8 +4,19 @@
 #include <vector>
 #include <string>
 #include <math.h>
+#include <iostream>
 
 using namespace std;
+
+// for debug
+#define USERDEBUG
+
+#ifdef USERDEBUG
+#define Debug(x) cout << x << endl
+#else
+#define Debug(x)
+#endif	//USERDEBUG
+
 /*
  * **************************************************************** *
  *        Declare Global Constants and Variables
