@@ -22,7 +22,7 @@ using namespace std;
 #define USERDEBUG
 
 #ifdef USERDEBUG
-#define Debug(x) cout << x << endl
+#define Debug(x) cout << x
 #else
 #define Debug(x)
 #endif	//USERDEBUG
