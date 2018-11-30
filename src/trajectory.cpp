@@ -75,7 +75,7 @@ Trajectory::Trajectory(std::vector<Target> targets, Map &map, CarData &car, Prev
     }
 
     if (car.emergency) {
-        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! trajectory_sd !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+        //cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! trajectory_sd !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     }
 }
 
@@ -168,7 +168,6 @@ TrajectoryJMT Trajectory::generate_trajectory_jmt(Target target, Map &map, Previ
     vector<PointC2> new_path_s(GLOBAL_NUM_POINTS, PointC2(0,0,0));
     vector<PointC2> new_path_d(GLOBAL_NUM_POINTS, PointC2(0,0,0));
 
-    //cout << "prev_size=" << prev_size << endl;
     //int last_point = GLOBAL_NUM_POINTS - prev_size - 1;
     int last_point;
     if (GLOBAL_PREV_PATH_XY_REUSED < GLOBAL_NUM_POINTS) {

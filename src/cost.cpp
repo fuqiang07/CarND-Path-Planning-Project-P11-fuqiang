@@ -67,9 +67,6 @@ bool Cost::check_collision(double x0, double y0, double theta0, double x1, doubl
       if (proj1 < min1) min1 = proj1;
     }
 
-    //cout << "min0=" << min0 << " max0=" << max0 << endl;
-    //cout << "min1=" << min1 << " max1=" << max1 << endl;
-
     bool overlap = false;
     if (min1 >= min0 && min1 < max0) overlap = true;
     if (max1 >= min0 && max1 < max0) overlap = true;
@@ -105,7 +102,7 @@ double ego_y_next = trajectory.y_vals[i+1];
 double ego_heading = atan2(ego_y_next - ego_y, ego_x_next - ego_x);
 
 if (check_collision(obj_x, obj_y, obj_heading, ego_x, ego_y, ego_heading)) {
-cout << "!!! ... COLLISION predicted on candidate trajectory at step " << i << "  ... !!!" << endl;
+//cout << "!!! ... COLLISION predicted on candidate trajectory at step " << i << "  ... !!!" << endl;
 return (i+1);
 }
 }
@@ -162,9 +159,6 @@ bool Cost::check_max_capabilities(vector<vector<double>> &traj)
 
     total_jerk += jerk * GLOBAL_TS;
 
-    //cout << "jx=" << jx << " jy=" << jy << endl;
-    //cout << "vel=" << vel << " acc=" << acc << " jerk=" << jerk << endl;
-
     if (vel > max_vel)
       max_vel = vel;
     if (acc > max_acc)
@@ -174,7 +168,7 @@ bool Cost::check_max_capabilities(vector<vector<double>> &traj)
   jerk_per_second = total_jerk / (GLOBAL_NUM_POINTS * GLOBAL_TS);
 
   if (roundf(max_vel) > GLOBAL_MAX_SPEED || roundf(max_acc) > GLOBAL_MAX_ACCEL || jerk_per_second > GLOBAL_MAX_JERK) {
-    cout << "max_vel=" << max_vel << " max_acc=" << max_acc << " jerk_per_second=" << jerk_per_second  << endl;
+    //cout << "max_vel=" << max_vel << " max_acc=" << max_acc << " jerk_per_second=" << jerk_per_second  << endl;
     //assert(1 == 0);
     return true;
   } else {
@@ -191,7 +185,6 @@ std::map<int, vector<Coord> >::iterator it = predictions.begin();
 while(it != predictions.end())
 {
 int fusion_index = it->first;
-//cout << "fusion_index=" << fusion_index << endl;
 vector<Coord> prediction = it->second;
 
 assert(prediction.size() == trajectory.x_vals.size());
@@ -211,7 +204,7 @@ dmin = dist;
 it++;
 }
 
-cout << "=====> dmin = " << dmin << endl;
+//cout << "=====> dmin = " << dmin << endl;
 return dmin;
 }
 
@@ -245,7 +238,7 @@ Cost::Cost(TrajectoryXY const &trajectory, Target target, Predictions &predict, 
   cost_efficiency = GLOBAL_FIELD_OF_VIEW - predict.get_lane_free_space(target.lane);
   cost_ = cost_ + GLOBAL_COST_EFFICIENCY * cost_efficiency;
 
-  cout << "car_lane=" << car_lane << " target.lane=" << target.lane << " target_lvel=" << predict.get_lane_speed(target.lane) << " cost=" << cost_ << endl;
+  //cout << "car_lane=" << car_lane << " target.lane=" << target.lane << " target_lvel=" << predict.get_lane_speed(target.lane) << " cost=" << cost_ << endl;
 }
 
 Cost::~Cost() {}

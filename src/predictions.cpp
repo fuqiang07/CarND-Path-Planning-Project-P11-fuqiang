@@ -55,8 +55,6 @@ return vel;
 
 double Predictions::get_safety_distance(double vel_back, double vel_front, double time_latency)
 {
-    //cout << "get_safety_distance: " << vel_back << ", " << vel_front << ", " << time_latency << '\n';
-
     double safety_distance = GLOBAL_SD_LC;
     if (vel_back > vel_front) {
         double time_to_decelerate = (vel_back - vel_front) / decel_ + time_latency;
@@ -88,8 +86,8 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
 
     paranoid_safety_distance_ = vel_ego_ * time_to_stop_ + 2 * GLOBAL_CAR_SAFETY_L;
 
-    cout << "SAFETY: D=" << dist_front_ << " dV=" << vel_ego_ - vel_front_ << " TTC=" << time_to_collision_
-         << " TTD=" << time_to_decelerate_ << " SD=" << safety_distance_ << " PSD=" << paranoid_safety_distance_ << '\n';
+    //cout << "SAFETY: D=" << dist_front_ << " dV=" << vel_ego_ - vel_front_ << " TTC=" << time_to_collision_
+    //     << " TTD=" << time_to_decelerate_ << " SD=" << safety_distance_ << " PSD=" << paranoid_safety_distance_ << '\n';
 
     for (int i = 0; i < GLOBAL_NUM_LANES; i++) {
         front_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, front_[i], GLOBAL_MAX_SPEED);
@@ -98,7 +96,7 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
         back_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, back_[i], 0);
         back_safety_distance_[i] = get_safety_distance(back_velocity_[i], vel_ego_, 2.0);
 
-        cout << "SAFETY_DISTANCE for LC[" << i << "]: front_sd=" << front_safety_distance_[i] << " back_sd=" << back_safety_distance_[i] << '\n';
+        //cout << "SAFETY_DISTANCE for LC[" << i << "]: front_sd=" << front_safety_distance_[i] << " back_sd=" << back_safety_distance_[i] << '\n';
     }
 
 }
@@ -107,9 +105,9 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 {
     int car_lane = get_lane(car.d);
     for (size_t i = 0; i < front_.size(); i++) {
-        cout << "lane " << i << ": ";
-        cout << "front " << front_[i] << " at " << front_dmin_[i] << " s_meters ; ";
-        cout << "back " << back_[i] << " at " << back_dmin_[i] << " s_meters" << endl;
+        //cout << "lane " << i << ": ";
+        //cout << "front " << front_[i] << " at " << front_dmin_[i] << " s_meters ; ";
+        //cout << "back " << back_[i] << " at " << back_dmin_[i] << " s_meters" << endl;
 
         int lane = i;
         // !!! This should be part of the behavior planner behavior.cpp
@@ -134,7 +132,7 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
                 lane_free_space_[i] = GLOBAL_FIELD_OF_VIEW;
             }
         }
-        cout << "Predictions::lane_speed_[" << i << "]=" << lane_speed_[i] << endl;
+        //cout << "Predictions::lane_speed_[" << i << "]=" << lane_speed_[i] << endl;
     }
 }
 

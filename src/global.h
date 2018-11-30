@@ -1,5 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
+// for debug
+#define USERDEBUG
 
 #include <vector>
 #include <string>
@@ -101,4 +103,15 @@ double get_dright(int lane);
 // d coord for "center lane" of a lane
 double get_dcenter(int lane);
 
-#endif
+
+#endif //GLOBAL_H
+
+
+
+
+
+#ifdef USERDEBUG
+#define Debug(x) cout << x << endl
+#else
+#define Debug(x)
+#endif	//USERDEBUG

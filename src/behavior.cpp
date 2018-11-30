@@ -30,7 +30,7 @@ Behavior::Behavior(vector<vector<double>> const &sensor_fusion, CarData car, Pre
       double check_speed = sqrt(vx*vx+vy*vy);
       double check_car_s = sensor_fusion[i][5];
 
-      cout << "obj_idx=" << i << " REF_VEL_MS=" << ref_vel_ms << " CHECK_SPEED=" << check_speed << endl;
+      //cout << "obj_idx=" << i << " REF_VEL_MS=" << ref_vel_ms << " CHECK_SPEED=" << check_speed << endl;
 
       if ((check_car_s > car.s) && ((check_car_s - car.s) < safety_distance)) {
         // do some logic here: lower reference velocity so we dont crash into the car infront of us
@@ -77,7 +77,6 @@ Behavior::Behavior(vector<vector<double>> const &sensor_fusion, CarData car, Pre
     if (closest_speed_ms < car_speed_ms && closest_dist <= safety_distance)
       target.accel *= -1.0;
   }
-  //cout << "!!!!! target: velocity=" << target.velocity << " accel=" << target.accel << '\n';
   // -----------------------------------------------
 
   targets_.push_back(target);
