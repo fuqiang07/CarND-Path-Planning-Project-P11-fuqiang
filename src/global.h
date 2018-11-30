@@ -8,6 +8,14 @@
 
 using namespace std;
 
+//debug
+#define USERDEBUG
+
+#ifdef USERDEBUG
+#define Debug(str) do { cout << str << endl; } while ( false )
+#else
+#define Debug(str) do { } while ( false )
+#endif
 
 /*
  * **************************************************************** *

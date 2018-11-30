@@ -18,15 +18,6 @@
 
 using namespace std;
 
-//debug
-#define USERDEBUG
-
-#ifdef USERDEBUG
-#define Debug(str) do { cout << str << endl; } while ( false )
-#else
-#define Debug(str) do { } while ( false )
-#endif
-
 // for convenience
 using json = nlohmann::json;
 
@@ -170,7 +161,7 @@ int main() {
                     vector<Target> targets = behavior.get_targets();
 					Debug("");
 					Debug("Behavior Planning:******************************");
-					Debug("Possible Target Lane" << targets.size() )
+					Debug("Possible Target Lane" << targets.size() );
 					/*
                      * **************************************************************** *
                      *        My code here: Trajectory Generation
