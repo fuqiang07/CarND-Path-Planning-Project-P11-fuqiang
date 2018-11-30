@@ -161,7 +161,7 @@ int main() {
                     vector<Target> targets = behavior.get_targets();
 					Debug("");
 					Debug("Behavior Planning:******************************");
-					Debug("Possible Target Lane" << targets.size() );
+					Debug("Possible Targets: " << targets.size() );
 					/*
                      * **************************************************************** *
                      *        My code here: Trajectory Generation
