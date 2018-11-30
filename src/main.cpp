@@ -16,6 +16,15 @@
 #include "trajectory.h"
 #include "cost.h"
 
+// for debug
+#define USERDEBUG
+
+#ifdef USERDEBUG
+#define Debug(x) cout << x << endl
+#else
+#define Debug(x)
+#endif	//USERDEBUG
+
 using namespace std;
 
 // for convenience

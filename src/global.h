@@ -1,13 +1,5 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
-// for debug
-#define USERDEBUG
-
-#ifdef USERDEBUG
-#define Debug(x) cout << x << endl
-#else
-#define Debug(x)
-#endif	//USERDEBUG
 
 #include <vector>
 #include <string>
