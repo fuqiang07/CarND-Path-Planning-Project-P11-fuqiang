@@ -1,3 +1,12 @@
+//debug
+#define USERDEBUG
+
+#ifdef USERDEBUG
+#define Debug(str) do { cout << str << endl; } while ( false )
+#else
+#define Debug(str) do { } while ( false )
+#endif
+
 #include <fstream>
 #include <math.h>
 #include <uWS/uWS.h>
@@ -17,15 +26,6 @@
 #include "cost.h"
 
 using namespace std;
-
-//debug
-#define USERDEBUG
-
-#ifdef USERDEBUG
-#define Debug(str) do { std::cout << str << std::endl; } while ( false )
-#else
-#define Debug(str) do { } while ( false )
-#endif
 
 // for convenience
 using json = nlohmann::json;
