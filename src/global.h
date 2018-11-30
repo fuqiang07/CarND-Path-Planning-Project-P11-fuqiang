@@ -3,6 +3,12 @@
 // for debug
 #define USERDEBUG
 
+#ifdef USERDEBUG
+#define Debug(x) cout << x << endl
+#else
+#define Debug(x)
+#endif	//USERDEBUG
+
 #include <vector>
 #include <string>
 #include <math.h>
@@ -105,13 +111,3 @@ double get_dcenter(int lane);
 
 
 #endif //GLOBAL_H
-
-
-
-
-
-#ifdef USERDEBUG
-#define Debug(x) cout << x << endl
-#else
-#define Debug(x)
-#endif	//USERDEBUG
