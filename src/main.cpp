@@ -19,12 +19,16 @@
 using namespace std;
 
 //debug
-//#define USERDEBUG
+#define USERDEBUG
 
 #ifdef USERDEBUG
-#define Debug(x) cout << x
+//#define Debug(x) cout << x
+void Debug(x){
+	cout << x << endl;
+}
 #else
-#define Debug(x)
+//#define Debug(x)
+void Debug(x){}
 #endif
 
 // for convenience
