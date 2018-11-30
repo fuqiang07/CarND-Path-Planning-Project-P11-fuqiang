@@ -1,12 +1,3 @@
-//debug
-#define USERDEBUG
-
-#ifdef USERDEBUG
-#define Debug(str) do { cout << str << endl; } while ( false )
-#else
-#define Debug(str) do { } while ( false )
-#endif
-
 #include <fstream>
 #include <math.h>
 #include <uWS/uWS.h>
@@ -26,6 +17,15 @@
 #include "cost.h"
 
 using namespace std;
+
+//debug
+#define USERDEBUG
+
+#ifdef USERDEBUG
+#define Debug(str) do { cout << str << endl; } while ( false )
+#else
+#define Debug(str) do { } while ( false )
+#endif
 
 // for convenience
 using json = nlohmann::json;
@@ -131,7 +131,7 @@ int main() {
                     car.d = frenet_car[1];
                     car.lane = get_lane(car.d);
 					
-					Debug("")
+					Debug("");
 					Debug("Pre-Planning:******************************");
 					Debug("car.x=" << car.x << " car.y=" << car.y << " car.s=" <<
                          car.s << " car.d=" << car.d);
@@ -157,7 +157,7 @@ int main() {
                     // Predict trajectories (over 1 second, i.e, 50 points in total) 
 					// of other cars (cloest front and back cars for each lane, 6 cars in total)
                     Predictions predictions = Predictions(sensor_fusion, car, GLOBAL_NUM_POINTS);
-					Debug("")
+					Debug("");
 					Debug("Prediction:******************************");
 					/*
                      * **************************************************************** *
@@ -168,7 +168,7 @@ int main() {
 					// Output a target to follow: lane, time duration, velocity, and acceleration
                     Behavior behavior = Behavior(sensor_fusion, car, predictions);
                     vector<Target> targets = behavior.get_targets();
-					Debug("")
+					Debug("");
 					Debug("Behavior Planning:******************************");
 					Debug("Possible Target Lane" << targets.size() )
 					/*
@@ -178,7 +178,7 @@ int main() {
                      */
                     // Generate optimal trajectory for the ego car to track					 
                     Trajectory trajectory = Trajectory(targets, map, car, previous_path, predictions);
-                    Debug("")
+                    Debug("");
 					Debug("Trajectory Generation:******************************");
 					/*
                      * **************************************************************** *
