@@ -19,7 +19,7 @@
 using namespace std;
 
 //debug
-//#define USERDEBUG
+#define USERDEBUG
 
 #ifdef USERDEBUG
 #define Debug(x) cout << x
