@@ -18,15 +18,14 @@
 
 using namespace std;
 
-// for debug
-/* #define USERDEBUG
+//debug
+//#define USERDEBUG
 
 #ifdef USERDEBUG
 #define Debug(x) cout << x
 #else
 #define Debug(x)
-#endif	//USERDEBUG */
-#define Debug(x) cout << x 
+#endif
 
 // for convenience
 using json = nlohmann::json;
