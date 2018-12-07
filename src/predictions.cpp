@@ -71,7 +71,7 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
     decel_ = 0.8 * GLOBAL_MAX_ACCEL;
     time_to_stop_ = vel_ego_ / decel_;
 
-    vel_front_ = get_sensor_fusion_vel(sensor_fusion, front_[car.lane], GLOBAL_MAX_SPEED);
+    vel_front_ = get_sensor_fusion_vel(sensor_fusion, front_index_[car.lane], GLOBAL_MAX_SPEED);
     dist_front_ = front_dmin_[car.lane];
 
     if (vel_ego_ > vel_front_) {
@@ -90,10 +90,10 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
     //     << " TTD=" << time_to_decelerate_ << " SD=" << safety_distance_ << " PSD=" << paranoid_safety_distance_ << '\n';
 
     for (int i = 0; i < GLOBAL_NUM_LANES; i++) {
-        front_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, front_[i], GLOBAL_MAX_SPEED);
+        front_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, front_index_[i], GLOBAL_MAX_SPEED);
         front_safety_distance_[i] = get_safety_distance(vel_ego_, front_velocity_[i], 0.0);
 
-        back_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, back_[i], 0);
+        back_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, back_index_[i], 0);
         back_safety_distance_[i] = get_safety_distance(back_velocity_[i], vel_ego_, 2.0);
 
         //cout << "SAFETY_DISTANCE for LC[" << i << "]: front_sd=" << front_safety_distance_[i] << " back_sd=" << back_safety_distance_[i] << '\n';
@@ -104,21 +104,21 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
 void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, CarData const &car)
 {
     int car_lane = get_lane(car.d);
-    for (size_t i = 0; i < front_.size(); i++) {
+    for (size_t i = 0; i < front_index_.size(); i++) {
         //cout << "lane " << i << ": ";
-        //cout << "front " << front_[i] << " at " << front_dmin_[i] << " s_meters ; ";
-        //cout << "back " << back_[i] << " at " << back_dmin_[i] << " s_meters" << endl;
+        //cout << "front " << front_index_[i] << " at " << front_dmin_[i] << " s_meters ; ";
+        //cout << "back " << back_index_[i] << " at " << back_dmin_[i] << " s_meters" << endl;
 
         int lane = i;
         // !!! This should be part of the behavior planner behavior.cpp
-        if (front_[i] >= 0) { // a car in front of us
+        if (front_index_[i] >= 0) { // a car in front of us
             //if (lane != car_lane && (back_dmin_[i] <= 10 || front_dmin_[i] <= 10)) {
             if (lane != car_lane && (back_dmin_[i] <= back_safety_distance_[i] || front_dmin_[i] <= front_safety_distance_[i])) {
                 lane_speed_[i] = 0;
                 lane_free_space_[i] = 0; // too dangerous
             } else {
-                double vx = sensor_fusion[front_[i]][3];
-                double vy = sensor_fusion[front_[i]][4];
+                double vx = sensor_fusion[front_index_[i]][3];
+                double vy = sensor_fusion[front_index_[i]][4];
                 lane_speed_[i] = sqrt(vx*vx+vy*vy);
                 lane_free_space_[i] = front_dmin_[i];
             }
@@ -182,19 +182,19 @@ vector<int> find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion
 
             if (s >= car_s) {  // front
                 if (dist < front_dmin_[lane]) {
-                    front_[lane] = i;
+                    front_index_[lane] = i;
                     front_dmin_[lane] = dist;
                 }
             } else {  // back
                 if (dist < back_dmin_[lane]) {
-                    back_[lane] = i;
+                    back_index_[lane] = i;
                     back_dmin_[lane] = dist;
                 }
             }
         }
     }
 
-    return { front_[0], back_[0], front_[1], back_[1], front_[2], back_[2] };
+    return { front_index_[0], back_index_[0], front_index_[1], back_index_[1], front_index_[2], back_index_[2] };
 }
 
 double Predictions::get_lane_speed(int lane) const {
