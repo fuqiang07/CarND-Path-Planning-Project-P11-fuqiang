@@ -28,10 +28,12 @@ int main() {
 
     /*
      * **************************************************************** *
-     *        My code here:
+     *        My code here: Map
+	 * 1. read the map file and load the waypoints
+	 * 2. interpolate the waypoints with spline function
+	 * 3. provide functions to convert between Frenet and Cartesian coordinates
      * **************************************************************** *
      */
-
     Map map;
     map.init(GLOBAL_MAP_FILE, GLOBAL_MAX_S, GLOBAL_CENTER_X, GLOBAL_CENTER_Y);
     map.read();
@@ -83,17 +85,12 @@ int main() {
                     previous_path_xy.y_vals = previous_path_y;
 
                     // Previous path's end s and d values
-                    double end_path_s = j[1]["end_path_s"];
-                    double end_path_d = j[1]["end_path_d"];
+                    //double end_path_s = j[1]["end_path_s"];
+                    //double end_path_d = j[1]["end_path_d"];
 
                     // Sensor Fusion Data, a list of all other cars on the same side of the road.
                     vector<vector<double>> sensor_fusion = j[1]["sensor_fusion"];
-
-                    json msgJson;
-
-                    vector<double> next_x_vals;
-                    vector<double> next_y_vals;
-
+					
                     /*
                      * **************************************************************** *
                      *        My code here: previous path points
@@ -111,6 +108,7 @@ int main() {
 					Debug("Pre-Planning:******************************");
 					Debug("car.x=" << car.x << " car.y=" << car.y << " car.s=" <<
                          car.s << " car.d=" << car.d);
+					Debug("car.lane=" << car.lane);
                     Debug("car.speed=" << car.speed << " car.speed_target=" << car.speed_target);
 
                     if (!initialized) {
@@ -164,8 +162,8 @@ int main() {
                     // Output the optimal path 					 
                     double min_cost = trajectory.getMinCost();
                     int min_cost_index = trajectory.getMinCostIndex();
-                    next_x_vals = trajectory.getMinCostTrajectoryXY().x_vals;
-                    next_y_vals = trajectory.getMinCostTrajectoryXY().y_vals;
+                    vector<double> next_x_vals = trajectory.getMinCostTrajectoryXY().x_vals;
+                    vector<double> next_y_vals = trajectory.getMinCostTrajectoryXY().y_vals;
 
                     if (GLOBAL_TRAJECTORY_JMT) {
                         prev_path_sd = trajectory.getMinCostTrajectorySD();
@@ -185,6 +183,8 @@ int main() {
                      * **************************************************************** *
                      */
 
+					json msgJson;
+					
                     // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
                     msgJson["next_x"] = next_x_vals;
                     msgJson["next_y"] = next_y_vals;
