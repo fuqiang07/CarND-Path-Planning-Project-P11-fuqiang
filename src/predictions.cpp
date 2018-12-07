@@ -4,15 +4,15 @@
 using namespace std;
 
 
-// map of at most 6 predictions: with 50 points x 2 coord (x,y): 6 objects predicted over 1 second horizon
-// predictions map: a dictionnary { fusion_index : horizon * (x,y) }
+//Step 1: Find the cloest vehicles (ahead and back) around the ego one for each lane, 6 cars in total
+//Step 2: Get the data of those cloest vehicles
 Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData const &car, int horizon)
 {
     std::map<int, vector<Coord> > predictions; // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
 
 
-    // vector of indexes in sensor_fusion
-    vector<int> closest_objects = find_closest_objects(sensor_fusion, car);
+    // Get the index of the cloest vehicles
+    vector<int> closest_objects = find_closest_vehicles_ID(sensor_fusion, car);
 
     for (int i = 0; i < closest_objects.size(); i++) {
         int fusion_index = closest_objects[i];
@@ -71,7 +71,7 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
     decel_ = 0.8 * GLOBAL_MAX_ACCEL;
     time_to_stop_ = vel_ego_ / decel_;
 
-    vel_front_ = get_sensor_fusion_vel(sensor_fusion, front_[car.lane], GLOBAL_MAX_SPEED);
+    vel_front_ = get_sensor_fusion_vel(sensor_fusion, front_index_[car.lane], GLOBAL_MAX_SPEED);
     dist_front_ = front_dmin_[car.lane];
 
     if (vel_ego_ > vel_front_) {
@@ -90,10 +90,10 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
     //     << " TTD=" << time_to_decelerate_ << " SD=" << safety_distance_ << " PSD=" << paranoid_safety_distance_ << '\n';
 
     for (int i = 0; i < GLOBAL_NUM_LANES; i++) {
-        front_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, front_[i], GLOBAL_MAX_SPEED);
+        front_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, front_index_[i], GLOBAL_MAX_SPEED);
         front_safety_distance_[i] = get_safety_distance(vel_ego_, front_velocity_[i], 0.0);
 
-        back_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, back_[i], 0);
+        back_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, back_index_[i], 0);
         back_safety_distance_[i] = get_safety_distance(back_velocity_[i], vel_ego_, 2.0);
 
         //cout << "SAFETY_DISTANCE for LC[" << i << "]: front_sd=" << front_safety_distance_[i] << " back_sd=" << back_safety_distance_[i] << '\n';
@@ -104,21 +104,21 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
 void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, CarData const &car)
 {
     int car_lane = get_lane(car.d);
-    for (size_t i = 0; i < front_.size(); i++) {
+    for (size_t i = 0; i < front_index_.size(); i++) {
         //cout << "lane " << i << ": ";
-        //cout << "front " << front_[i] << " at " << front_dmin_[i] << " s_meters ; ";
-        //cout << "back " << back_[i] << " at " << back_dmin_[i] << " s_meters" << endl;
+        //cout << "front " << front_index_[i] << " at " << front_dmin_[i] << " s_meters ; ";
+        //cout << "back " << back_index_[i] << " at " << back_dmin_[i] << " s_meters" << endl;
 
         int lane = i;
         // !!! This should be part of the behavior planner behavior.cpp
-        if (front_[i] >= 0) { // a car in front of us
+        if (front_index_[i] >= 0) { // a car in front of us
             //if (lane != car_lane && (back_dmin_[i] <= 10 || front_dmin_[i] <= 10)) {
             if (lane != car_lane && (back_dmin_[i] <= back_safety_distance_[i] || front_dmin_[i] <= front_safety_distance_[i])) {
                 lane_speed_[i] = 0;
                 lane_free_space_[i] = 0; // too dangerous
             } else {
-                double vx = sensor_fusion[front_[i]][3];
-                double vy = sensor_fusion[front_[i]][4];
+                double vx = sensor_fusion[front_index_[i]][3];
+                double vy = sensor_fusion[front_index_[i]][4];
                 lane_speed_[i] = sqrt(vx*vx+vy*vy);
                 lane_free_space_[i] = front_dmin_[i];
             }
@@ -140,54 +140,61 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 // we generate predictions for closet car per lane behind us
 // => at most 6 predictions (for now on) as we have 3 lanes
 
-// sort of simple scene detection
-vector<int> Predictions::find_closest_objects(vector<vector<double>> const &sensor_fusion, CarData const &car) {
-    // Handle FOV and s wraparound
-    double sfov_min = car.s - GLOBAL_FIELD_OF_VIEW;
-    double sfov_max = car.s + GLOBAL_FIELD_OF_VIEW;
-    double sfov_shit = 0;
-    if (sfov_min < 0) { // Handle s wrapping
-        sfov_shit = -sfov_min;
-    } else if (sfov_max > GLOBAL_MAX_S) {
-        sfov_shit = GLOBAL_MAX_S - sfov_max;
+// Fine the cloest vehicles based on sensor function and localization data
+// we only care about the cloest vehicles front and back for each lane
+// that is to say, front 0 and back 0, front 1 and back 1, front 2 and back 2 for lane 0, 1, 2, respectively
+vector<int> find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion, CarData const &car) {
+    
+	// we only consider the vehicles within the field of view: 70 meters
+    double s_min = car.s - GLOBAL_FIELD_OF_VIEW;
+    double s_max = car.s + GLOBAL_FIELD_OF_VIEW;
+	
+	// handle the cases at the very begining / end of the waypoints
+    double s_shift = 0;
+    if (s_min < 0) {
+        s_shift = -s_min;
+    } 
+	else if (s_max > GLOBAL_MAX_S) {
+        s_shift = GLOBAL_MAX_S - s_max;
     }
-    sfov_min += sfov_shit;
-    sfov_max += sfov_shit;
-    assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
-    assert(sfov_max >= 0 && sfov_max <= GLOBAL_MAX_S);
+	
+    s_min += s_shift;
+	assert(s_min >= 0 && s_min <= GLOBAL_MAX_S);
+	
+    s_max += s_shift;    
+    assert(s_max >= 0 && s_max <= GLOBAL_MAX_S);
 
-    double car_s = car.s;
+    double car_s = car.s + s_shift;
 
-    car_s += sfov_shit;
-
-    for (size_t i = 0; i < sensor_fusion.size(); i++) {
-        double s = sensor_fusion[i][5] + sfov_shit;
-        if (s >= sfov_min && s <= sfov_max) { // object in FOV
+    for (size_t i = 0; i < sensor_fusion.size(); i++){
+		
+        double s = sensor_fusion[i][5] + s_shift;
+		
+        if (s >= s_min && s <= s_max) { // vehicle in FOV
+		
             double d = sensor_fusion[i][6];
             int lane = get_lane(d);
+			
             if (lane < 0 || lane > 2)
-                continue; // some garbage values in sensor_fusion from time to time
+                continue; // drop some exceptional data
 
-            // s wraparound already handled via FOV shift
-            //double dist = get_sdistance(s, car_s);
             double dist = fabs(s - car_s);
 
             if (s >= car_s) {  // front
                 if (dist < front_dmin_[lane]) {
-                    front_[lane] = i;
+                    front_index_[lane] = i;
                     front_dmin_[lane] = dist;
                 }
             } else {  // back
                 if (dist < back_dmin_[lane]) {
-                    back_[lane] = i;
+                    back_index_[lane] = i;
                     back_dmin_[lane] = dist;
                 }
             }
         }
     }
 
-
-    return { front_[0], back_[0], front_[1], back_[1], front_[2], back_[2] };
+    return { front_index_[0], back_index_[0], front_index_[1], back_index_[1], front_index_[2], back_index_[2] };
 }
 
 double Predictions::get_lane_speed(int lane) const {
