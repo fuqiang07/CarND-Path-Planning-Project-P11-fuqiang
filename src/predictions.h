@@ -45,7 +45,7 @@ private:
 	double get_safety_distance(double vel_back, double vel_front, double time_latency);
 
     // Store the index of the cloest vehicles for lane 0, 1, and 2, respectively
-    std::vector<int> back_index_= {-1, -1, -1};
+    std::vector<int> front_index_= {-1, -1, -1};
     std::vector<int> back_index_ = {-1, -1, -1};
 
     // Store the short distances of the cloest vehicles for lane 0, 1, and 2, respectively
