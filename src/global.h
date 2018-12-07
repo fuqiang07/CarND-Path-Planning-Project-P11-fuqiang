@@ -95,6 +95,7 @@ struct Coord {
 constexpr double pi() { return M_PI; }
 double deg2rad(double x);
 double rad2deg(double x);
+
 // For converting back and forth between mph and ms.
 double mph2ms(double vel_mph);
 double ms2mph(double vel_ms);
@@ -112,5 +113,7 @@ double get_dright(int lane);
 // d coord for "center lane" of a lane
 double get_dcenter(int lane);
 
+// Checks if the SocketIO event has JSON data.
+string hasData(string s);
 
 #endif //GLOBAL_H
