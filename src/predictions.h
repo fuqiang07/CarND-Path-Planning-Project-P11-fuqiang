@@ -13,38 +13,23 @@
 
 class Predictions {
 public:
-	/*
-     * Constructor
-     */
     Predictions(std::vector<std::vector<double>> const &sensor_fusion,
                 CarData const &car, 
 				int horizon);
-				
-	/*
-     * Destructor.
-     */
     virtual ~Predictions();
 
     std::map<int, std::vector<Coord> > get_predictions() const { return predictions_; };
-    
-	double get_safety_distance() const { return safety_distance_; };
-    
-	double get_paranoid_safety_distance() const { return paranoid_safety_distance_; };
-    
-	double get_lane_speed(int lane) const;
-    
-	double get_lane_free_space(int lane) const;
+    double get_safety_distance() const { return safety_distance_; };
+    double get_paranoid_safety_distance() const { return paranoid_safety_distance_; };
+    double get_lane_speed(int lane) const;
+    double get_lane_free_space(int lane) const;
 
 
 private:
-    
-	void set_safety_distances(std::vector<std::vector<double>> const &sensor_fusion, CarData const &car);
-    
-	void set_lane_info(std::vector<std::vector<double>> const &sensor_fusion, CarData const &car);
-    
-	std::vector<int> find_closest_vehicles_ID(std::vector<std::vector<double>> const &sensor_fusion, CarData const &car);
-    
-	double get_safety_distance(double vel_back, double vel_front, double time_latency);
+    void set_safety_distances(std::vector<std::vector<double>> const &sensor_fusion, CarData const &car);
+    void set_lane_info(std::vector<std::vector<double>> const &sensor_fusion, CarData const &car);
+    std::vector<int> find_closest_objects(std::vector<std::vector<double>> const &sensor_fusion, CarData const &car);
+    double get_safety_distance(double vel_back, double vel_front, double time_latency);
 
     // TODO use vector init depending on GLOBAL_NUM_LANES
     std::vector<int> front_= {-1, -1, -1};  // idx of closest object per lane
