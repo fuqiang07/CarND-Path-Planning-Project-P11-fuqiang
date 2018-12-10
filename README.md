@@ -152,9 +152,9 @@ After compare the cost for the $9$ candidates. I will choose the one with minimu
 * [Optimal Trajectory Generation for Dynamic Street Scenarios in a Frenet Frame](https://pdfs.semanticscholar.org/0e4c/282471fda509e8ec3edd555e32759fedf4d7.pdf)
 * [Towards Fully Autonomous Driving: Systems and Algorithms](https://www.cs.cmu.edu/~zkolter/pubs/levinson-iv2011.pdf)
 * [Collision Detection: Separating Axis Theorem]( http://www.dyn4j.org/2010/01/sat/)
-* [Planning the path for a Self-Driving Car on a Highway](https://towardsdatascience.com/planning-the-path-for-a-self-driving-car-on-a-highway-7134fddd8707) by Priya Dwivedi.
-* [Udacity Self-Driving Car Nanodegree Project 11 - Path Planning - Part 1](http://jeremyshannon.com/2017/08/25/udacity-sdcnd-path-planning-pt1.html) by Jeremy Shannon.
-* [Udacity Self Driving Car ND Path Planning Project](https://medium.com/@philippe.weingertner/udacity-self-driving-car-nd-path-planning-project-6558f6d77887) by Philippe W.
+* [Planning the path for a Self-Driving Car on a Highway](https://towardsdatascience.com/planning-the-path-for-a-self-driving-car-on-a-highway-7134fddd8707).
+* [Udacity Self-Driving Car Nanodegree Project 11](http://jeremyshannon.com/2017/08/25/udacity-sdcnd-path-planning-pt1.html).
+* [Udacity Self Driving Car ND Path Planning Project](https://medium.com/@philippe.weingertner/udacity-self-driving-car-nd-path-planning-project-6558f6d77887).
 
 
 
