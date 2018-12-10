@@ -166,15 +166,18 @@ vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &
     double car_s = car.s + sfov_shit;
 
     for (size_t i = 0; i < sensor_fusion.size(); i++) {
+		
         double s = sensor_fusion[i][5] + sfov_shit;
-        if (s >= sfov_min && s <= sfov_max) { // object in FOV
+		
+		// vehicle in FOV
+        if (s >= sfov_min && s <= sfov_max) {
+			
             double d = sensor_fusion[i][6];
             int lane = get_lane(d);
-            if (lane < 0 || lane > 2)
-                continue; // some garbage values in sensor_fusion from time to time
+            
+			if (lane < 0 || lane > 2)
+                continue; // drop some exceptional data
 
-            // s wraparound already handled via FOV shift
-            //double dist = get_sdistance(s, car_s);
             double dist = fabs(s - car_s);
 
             if (s >= car_s) {  // front
@@ -182,7 +185,8 @@ vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &
                     front_id_[lane] = i;
                     front_dmin_[lane] = dist;
                 }
-            } else {  // back
+            } 
+			else {  // back
                 if (dist < back_dmin_[lane]) {
                     back_id_[lane] = i;
                     back_dmin_[lane] = dist;
