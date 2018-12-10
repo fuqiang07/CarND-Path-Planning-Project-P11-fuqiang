@@ -156,14 +156,14 @@ vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &
 	else if (sfov_max > GLOBAL_MAX_S) {
         sfov_shit = GLOBAL_MAX_S - sfov_max;
     }
+	
     sfov_min += sfov_shit;
-    sfov_max += sfov_shit;
-    assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
+	assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
+	
+    sfov_max += sfov_shit;    
     assert(sfov_max >= 0 && sfov_max <= GLOBAL_MAX_S);
 
-    double car_s = car.s;
-
-    car_s += sfov_shit;
+    double car_s = car.s + sfov_shit;
 
     for (size_t i = 0; i < sensor_fusion.size(); i++) {
         double s = sensor_fusion[i][5] + sfov_shit;
