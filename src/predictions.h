@@ -9,6 +9,8 @@
 
 #include "global.h"
 
+// TODO remove hardcoded values
+
 class Predictions {
 public:
 	/*
@@ -44,25 +46,22 @@ private:
     
 	double get_safety_distance(double vel_back, double vel_front, double time_latency);
 
-    // Store the index of the cloest vehicles for lane 0, 1, and 2, respectively
-    std::vector<int> front_index_= {-1, -1, -1};
-    std::vector<int> back_index_ = {-1, -1, -1};
+    // TODO use vector init depending on GLOBAL_NUM_LANES
+    std::vector<int> front_= {-1, -1, -1};  // idx of closest object per lane
+    std::vector<int> back_ = {-1, -1, -1};   // idx of closest object per lane
 
-    // Store the short distances of the cloest vehicles for lane 0, 1, and 2, respectively
-    std::vector<double> front_dmin_ = {GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE};
-    std::vector<double> back_dmin_ = {GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE};
+    // TODO use FOV instead of GLOBAL_MAX_DOUBLE
+    std::vector<double> front_dmin_ = {GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE};  // dist min per lane
+    std::vector<double> back_dmin_ = {GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE, GLOBAL_MAX_DOUBLE};   // dist min per lane
 
-	// Store the velocities of the cloest vehicles for lane 0, 1, and 2, respectively
     std::vector<double> front_velocity_ = {GLOBAL_MAX_SPEED, GLOBAL_MAX_SPEED, GLOBAL_MAX_SPEED};
-	std::vector<double> back_velocity_ = {GLOBAL_MAX_SPEED, GLOBAL_MAX_SPEED, GLOBAL_MAX_SPEED};
-	
-	// Store the safety distances of the cloest vehicles for lane 0, 1, and 2, respectively
-    std::vector<double> front_safety_distance_ = {GLOBAL_SD_LC, GLOBAL_SD_LC, GLOBAL_SD_LC};    
+    std::vector<double> front_safety_distance_ = {GLOBAL_SD_LC, GLOBAL_SD_LC, GLOBAL_SD_LC};
+
+    std::vector<double> back_velocity_ = {GLOBAL_MAX_SPEED, GLOBAL_MAX_SPEED, GLOBAL_MAX_SPEED};
     std::vector<double> back_safety_distance_ = {GLOBAL_SD_LC, GLOBAL_SD_LC, GLOBAL_SD_LC};
 
-    // // Store the predicted trajectories of the cloest vehicles for lane 0, 1, and 2, respectively
+    // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
     std::map< int, std::vector<Coord> > predictions_;
-	
     double lane_speed_[GLOBAL_NUM_LANES];
     double lane_free_space_[GLOBAL_NUM_LANES];
 
