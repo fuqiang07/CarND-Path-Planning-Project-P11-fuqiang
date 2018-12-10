@@ -8,7 +8,7 @@ using namespace std;
 //Step 2: Get the data of those cloest vehicles
 Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData const &car, int horizon)
 {
-    std::map<int, vector<Coord> > predictions; // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
+    //std::map<int, vector<Coord> > predictions; // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
 
     // Get the index of the cloest vehicles
     vector<int> closest_objects = find_closest_vehicles_ID(sensor_fusion, car);
