@@ -42,7 +42,7 @@ int main() {
     bool initialized = false;
 
     // Store car data in a structure
-	// x, y, s, d, yaw, speed, speed_target, lane, emergency
+    // x, y, s, d, yaw, speed, speed_target, lane, emergency
     CarData car = CarData(0., 0., 0., 0., 0.,  0., 1.0, 0., false);
 
     // Store previous s and d paths
@@ -51,8 +51,8 @@ int main() {
      * **************************************************************** *
      */
 
-    h.onMessage([&map, &car, &initialized, &prev_path_sd](uWS::WebSocket<uWS::SERVER> ws, 
-	char *data, size_t length, uWS::OpCode opCode) {
+    h.onMessage([&map, &car, &initialized, &prev_path_sd](uWS::WebSocket<uWS::SERVER> ws,
+                                                          char *data, size_t length, uWS::OpCode opCode) {
         // "42" at the start of the message means there's a websocket message event.
         // The 4 signifies a websocket message
         // The 2 signifies a websocket event
@@ -77,7 +77,7 @@ int main() {
                     car.yaw = j[1]["yaw"];
                     car.speed = j[1]["speed"];
 
-					TrajectoryXY previous_path_xy;
+                    TrajectoryXY previous_path_xy;
                     // Previous path data given to the Planner
                     vector<double>  previous_path_x = j[1]["previous_path_x"];
                     vector<double>  previous_path_y = j[1]["previous_path_y"];
@@ -90,7 +90,7 @@ int main() {
 
                     // Sensor Fusion Data, a list of all other cars on the same side of the road.
                     vector<vector<double>> sensor_fusion = j[1]["sensor_fusion"];
-					
+
                     /*
                      * **************************************************************** *
                      *        My code here: previous path points
@@ -103,12 +103,12 @@ int main() {
                     car.s = frenet_car[0];
                     car.d = frenet_car[1];
                     car.lane = get_lane(car.d);
-					
-					Debug("");
-					Debug("Pre-Planning:******************************");
-					Debug("car.x=" << car.x << " car.y=" << car.y << " car.s=" <<
-                         car.s << " car.d=" << car.d);
-					Debug("car.lane=" << car.lane);
+
+                    Debug("");
+                    Debug("Pre-Planning:******************************");
+                    Debug("car.x=" << car.x << " car.y=" << car.y << " car.s=" <<
+                                   car.s << " car.d=" << car.d);
+                    Debug("car.lane=" << car.lane);
                     Debug("car.speed=" << car.speed << " car.speed_target=" << car.speed_target);
 
                     if (!initialized) {
@@ -119,33 +119,35 @@ int main() {
 
                     // Keep points of previous generated trajectory before prev_size
                     // Re-generate path points after prev_size
-                    PreviousPath previous_path = PreviousPath(previous_path_xy, 
-							prev_path_sd, 
-							min(prev_size, GLOBAL_PREV_PATH_XY_REUSED));
-					
-					/*
+                    PreviousPath previous_path = PreviousPath(previous_path_xy,
+                                                              prev_path_sd,
+                                                              min(prev_size, GLOBAL_PREV_PATH_XY_REUSED));
+
+                    /*
                      * **************************************************************** *
                      *        My code here: Prediction
                      * **************************************************************** *
-                     */					
+                     */
                     // Predict trajectories (over 1 second, i.e, 50 points in total) 
-					// of other cars (cloest front and back cars for each lane, 6 cars in total)
-                    Predictions predictions = Predictions(sensor_fusion, car, GLOBAL_NUM_POINTS);
-					Debug("");
-					Debug("Prediction:******************************");
-					/*
+                    // of other cars (cloest front and back cars for each lane, 6 cars in total)
+                    Predictions predictions = Predictions(sensor_fusion,
+                                                          car,
+                                                          GLOBAL_NUM_POINTS);
+                    Debug("");
+                    Debug("Prediction:******************************");
+                    /*
                      * **************************************************************** *
                      *        My code here: Behavior Planning
                      * **************************************************************** *
-                     */					
-					// Behavior planning for the ego car
-					// Output a target to follow: lane, time duration, velocity, and acceleration
+                     */
+                    // Behavior planning for the ego car
+                    // Output a target to follow: lane, time duration, velocity, and acceleration
                     Behavior behavior = Behavior(sensor_fusion, car, predictions);
                     vector<Target> targets = behavior.get_targets();
-					Debug("");
-					Debug("Behavior Planning:******************************");
-					Debug("Possible Targets: " << targets.size() );
-					/*
+                    Debug("");
+                    Debug("Behavior Planning:******************************");
+                    Debug("Possible Target Choices: " << targets.size() );
+                    /*
                      * **************************************************************** *
                      *        My code here: Trajectory Generation
                      * **************************************************************** *
@@ -153,8 +155,8 @@ int main() {
                     // Generate optimal trajectory for the ego car to track					 
                     Trajectory trajectory = Trajectory(targets, map, car, previous_path, predictions);
                     Debug("");
-					Debug("Trajectory Generation:******************************");
-					/*
+                    Debug("Trajectory Generation:******************************");
+                    /*
                      * **************************************************************** *
                      *        My code here: Output Optimal Path to the Simulator
                      * **************************************************************** *
@@ -175,16 +177,16 @@ int main() {
                     if (target_lane != car.lane) {
                         Debug( "=====CHANGE LANE=====> to : " << target_lane << " with target speed" << car.speed_target);
                     }
-					else{
-						Debug( "=====KEEP CURRENT LANE=====> as : " << target_lane << " with target speed" << car.speed_target);
-					}
+                    else{
+                        Debug( "=====KEEP CURRENT LANE=====> as : " << target_lane << " with target speed" << car.speed_target);
+                    }
 
                     /*
                      * **************************************************************** *
                      */
 
-					json msgJson;
-					
+                    json msgJson;
+
                     // TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
                     msgJson["next_x"] = next_x_vals;
                     msgJson["next_y"] = next_y_vals;

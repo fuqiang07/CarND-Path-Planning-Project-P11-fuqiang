@@ -10,22 +10,22 @@
 #include "predictions.h"
 
 struct Target {
-  double lane;
-  double velocity; // for JMT trajectories
-  double time;  // for manoeuver
-  double accel; // XXX for emergency trajectories
-  Target(double l=0, double v=0, double t=0, double a=0) : lane(l), velocity(v), time(t), accel(a) {}
+    double lane;
+    double velocity;
+    double time;
+    double accel;
+    Target(double l=0, double v=0, double t=0, double a=0) : lane(l), velocity(v), time(t), accel(a) {}
 };
 
 
 class Behavior {
 public:
-  Behavior(std::vector<std::vector<double>> const &sensor_fusion, CarData car, Predictions const &predictions);
-  virtual ~Behavior();
-  std::vector<Target> get_targets();
+    Behavior(std::vector<std::vector<double>> const &sensor_fusion, CarData car, Predictions const &predictions);
+    virtual ~Behavior();
+    std::vector<Target> get_targets();
 
 private:
-  std::vector<Target> targets_;
+    std::vector<Target> targets_;
 };
 
 

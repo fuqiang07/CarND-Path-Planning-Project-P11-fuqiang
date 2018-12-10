@@ -115,8 +115,8 @@ void Map::read()
     // new map: 1 point every meter
     for (size_t i = 1; i < new_map_waypoints_x.size(); i++) {
         frenet_s += distance(new_map_waypoints_x[i], new_map_waypoints_y[i], new_map_waypoints_x[i-1], new_map_waypoints_y[i-1]);
-        //new_map_s.push_back(frenet_s); // TODO test both alternatives
-        new_map_s.push_back(i); // better
+        new_map_s.push_back(frenet_s);
+        //new_map_s.push_back(i); // better
     }
 
 }

@@ -3,8 +3,11 @@
 using namespace std;
 
 Behavior::Behavior(vector<vector<double>> const &sensor_fusion, CarData car, Predictions const &predictions) {
+  
   Target target;
-  target.time = 2.0;
+  
+  target.time = 3.0;
+  
   double car_speed_target = car.speed_target;
 
   double safety_distance = predictions.get_safety_distance();

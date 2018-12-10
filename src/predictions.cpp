@@ -87,17 +87,12 @@ void Predictions::set_safety_distances(vector<vector<double>> const &sensor_fusi
 
     paranoid_safety_distance_ = vel_ego_ * time_to_stop_ + 2 * GLOBAL_CAR_SAFETY_L;
 
-    //cout << "SAFETY: D=" << dist_front_ << " dV=" << vel_ego_ - vel_front_ << " TTC=" << time_to_collision_
-    //     << " TTD=" << time_to_decelerate_ << " SD=" << safety_distance_ << " PSD=" << paranoid_safety_distance_ << '\n';
-
     for (int i = 0; i < GLOBAL_NUM_LANES; i++) {
         front_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, front_id_[i], GLOBAL_MAX_SPEED);
         front_safety_distance_[i] = get_safety_distance(vel_ego_, front_velocity_[i], 0.0);
 
         back_velocity_[i] = get_sensor_fusion_vel(sensor_fusion, back_id_[i], 0);
         back_safety_distance_[i] = get_safety_distance(back_velocity_[i], vel_ego_, 2.0);
-
-        //cout << "SAFETY_DISTANCE for LC[" << i << "]: front_sd=" << front_safety_distance_[i] << " back_sd=" << back_safety_distance_[i] << '\n';
     }
 
 }
@@ -136,10 +131,6 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
         //cout << "Predictions::lane_speed_[" << i << "]=" << lane_speed_[i] << endl;
     }
 }
-
-// we generate predictions for closet car per lane in front of us
-// we generate predictions for closet car per lane behind us
-// => at most 6 predictions (for now on) as we have 3 lanes
 
 // Find the cloest vehicles based on sensor function and localization data
 // we only care about the cloest vehicles front and back for each lane
