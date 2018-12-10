@@ -4,15 +4,15 @@
 using namespace std;
 
 
-//Step 1: Find the cloest vehicle (ahead and back) around the ego one for each lane, 6 cars in total
-//Step 2: 
+// map of at most 6 predictions: with 50 points x 2 coord (x,y): 6 objects predicted over 1 second horizon
+// predictions map: a dictionnary { fusion_index : horizon * (x,y) }
 Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData const &car, int horizon)
 {
     std::map<int, vector<Coord> > predictions; // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
 
 
     // vector of indexes in sensor_fusion
-    vector<int> closest_objects = find_closest_vehicles_ID(sensor_fusion, car);
+    vector<int> closest_objects = find_closest_objects(sensor_fusion, car);
 
     for (int i = 0; i < closest_objects.size(); i++) {
         int fusion_index = closest_objects[i];
@@ -140,24 +140,17 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 // we generate predictions for closet car per lane behind us
 // => at most 6 predictions (for now on) as we have 3 lanes
 
-// Fine the cloest vehicles based on sensor function and localization data
-// we only care about the cloest vehicles front and back for each lane
-// that is to say, front 0 and back 0, front 1 and back 1, front 2 and back 2 for lane 0, 1, 2, respectively
-vector<int> find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion, CarData const &car) {
-    
-	// we only consider the vehicles within the field of view: 70 meters
+// sort of simple scene detection
+vector<int> Predictions::find_closest_objects(vector<vector<double>> const &sensor_fusion, CarData const &car) {
+    // Handle FOV and s wraparound
     double sfov_min = car.s - GLOBAL_FIELD_OF_VIEW;
     double sfov_max = car.s + GLOBAL_FIELD_OF_VIEW;
-	
-	// handle the case at the very begining / end of the waypoints
     double sfov_shit = 0;
-    if (sfov_min < 0) {
+    if (sfov_min < 0) { // Handle s wrapping
         sfov_shit = -sfov_min;
-    } 
-	else if (sfov_max > GLOBAL_MAX_S) {
+    } else if (sfov_max > GLOBAL_MAX_S) {
         sfov_shit = GLOBAL_MAX_S - sfov_max;
     }
-	
     sfov_min += sfov_shit;
     sfov_max += sfov_shit;
     assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
@@ -192,6 +185,7 @@ vector<int> find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion
             }
         }
     }
+
 
     return { front_[0], back_[0], front_[1], back_[1], front_[2], back_[2] };
 }
