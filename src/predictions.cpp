@@ -8,15 +8,13 @@ using namespace std;
 //Step 2: Get the data of those cloest vehicles
 Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData const &car, int horizon)
 {
-    //std::map<int, vector<Coord> > predictions; // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
-
     // Get the index of the cloest vehicles
     vector<int> closest_objects = find_closest_vehicles_ID(sensor_fusion, car);
 
+    // Predict the future trajectories based on car Model
     for (int i = 0; i < closest_objects.size(); i++) {
         int fusion_index = closest_objects[i];
         if (fusion_index >= 0) {
-            //double fusion_id = sensor_fusion[fusion_index][0];
             double x = sensor_fusion[fusion_index][1];
             double y = sensor_fusion[fusion_index][2];
             double vx = sensor_fusion[fusion_index][3];
@@ -39,17 +37,20 @@ Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData co
 Predictions::~Predictions() {}
 
 
-double get_sensor_fusion_vel(vector<vector<double>> const &sensor_fusion, int idx, double default_vel)
-{
-double vx, vy, vel;
-if (idx >= 0 && idx < sensor_fusion.size()) {
-vx = sensor_fusion[idx][3];
-vy = sensor_fusion[idx][4];
-vel = sqrt(vx*vx+vy*vy);
-} else {
-vel = default_vel;
-}
-return vel;
+double get_sensor_fusion_vel(vector<vector<double>> const &sensor_fusion, int idx, double default_vel) {
+	
+	double vx, vy, vel;
+	
+	if (idx >= 0 && idx < sensor_fusion.size()) {
+		vx = sensor_fusion[idx][3];
+		vy = sensor_fusion[idx][4];
+		vel = sqrt(vx*vx+vy*vy);
+	} 
+	else {
+		vel = default_vel;
+	}
+	
+	return vel;
 }
 
 double Predictions::get_safety_distance(double vel_back, double vel_front, double time_latency)
@@ -59,7 +60,8 @@ double Predictions::get_safety_distance(double vel_back, double vel_front, doubl
         double time_to_decelerate = (vel_back - vel_front) / decel_ + time_latency;
         safety_distance = vel_back * time_to_decelerate + 1.5 * GLOBAL_CAR_SAFETY_L;
     }
-    safety_distance = max(safety_distance, GLOBAL_SD_LC);  // conservative
+    safety_distance = max(safety_distance, GLOBAL_SD_LC);
+	
     return safety_distance;
 }
 
@@ -143,39 +145,39 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 // we only care about the cloest vehicles front and back for each lane
 // that is to say, front 0 and back 0, front 1 and back 1, front 2 and back 2 for lane 0, 1, 2, respectively
 vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion, CarData const &car) {
-    
-	// we only consider the vehicles within the field of view: 70 meters
+
+    // we only consider the vehicles within the field of view: 70 meters
     double sfov_min = car.s - GLOBAL_FIELD_OF_VIEW;
     double sfov_max = car.s + GLOBAL_FIELD_OF_VIEW;
-	
-	// handle the cases at the very begining / end of the waypoints
+
+    // handle the cases at the very begining / end of the waypoints
     double sfov_shit = 0;
     if (sfov_min < 0) { // Handle s wrapping
         sfov_shit = -sfov_min;
-    } 
-	else if (sfov_max > GLOBAL_MAX_S) {
+    }
+    else if (sfov_max > GLOBAL_MAX_S) {
         sfov_shit = GLOBAL_MAX_S - sfov_max;
     }
-	
+
     sfov_min += sfov_shit;
-	assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
-	
-    sfov_max += sfov_shit;    
+    assert(sfov_min >= 0 && sfov_min <= GLOBAL_MAX_S);
+
+    sfov_max += sfov_shit;
     assert(sfov_max >= 0 && sfov_max <= GLOBAL_MAX_S);
 
     double car_s = car.s + sfov_shit;
 
     for (size_t i = 0; i < sensor_fusion.size(); i++) {
-		
+
         double s = sensor_fusion[i][5] + sfov_shit;
-		
-		// vehicle in FOV
+
+        // vehicle in FOV
         if (s >= sfov_min && s <= sfov_max) {
-			
+
             double d = sensor_fusion[i][6];
             int lane = get_lane(d);
-            
-			if (lane < 0 || lane > 2)
+
+            if (lane < 0 || lane > 2)
                 continue; // drop some exceptional data
 
             double dist = fabs(s - car_s);
@@ -185,8 +187,8 @@ vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &
                     front_id_[lane] = i;
                     front_dmin_[lane] = dist;
                 }
-            } 
-			else {  // back
+            }
+            else {  // back
                 if (dist < back_dmin_[lane]) {
                     back_id_[lane] = i;
                     back_dmin_[lane] = dist;
