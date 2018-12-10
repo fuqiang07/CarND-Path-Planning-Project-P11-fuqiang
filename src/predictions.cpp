@@ -12,7 +12,7 @@ Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData co
 
 
     // vector of indexes in sensor_fusion
-    vector<int> closest_objects = find_closest_objects(sensor_fusion, car);
+    vector<int> closest_objects = find_closest_vehicles_ID(sensor_fusion, car);
 
     for (int i = 0; i < closest_objects.size(); i++) {
         int fusion_index = closest_objects[i];
@@ -141,7 +141,7 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 // => at most 6 predictions (for now on) as we have 3 lanes
 
 // sort of simple scene detection
-vector<int> Predictions::find_closest_objects(vector<vector<double>> const &sensor_fusion, CarData const &car) {
+vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion, CarData const &car) {
     // Handle FOV and s wraparound
     double sfov_min = car.s - GLOBAL_FIELD_OF_VIEW;
     double sfov_max = car.s + GLOBAL_FIELD_OF_VIEW;
