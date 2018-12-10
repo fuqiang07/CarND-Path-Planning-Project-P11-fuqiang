@@ -4,14 +4,13 @@
 using namespace std;
 
 
-// map of at most 6 predictions: with 50 points x 2 coord (x,y): 6 objects predicted over 1 second horizon
-// predictions map: a dictionnary { fusion_index : horizon * (x,y) }
+//Step 1: Find the cloest vehicles (ahead and back) around the ego one for each lane, 6 cars in total
+//Step 2: Get the data of those cloest vehicles
 Predictions::Predictions(vector<vector<double>> const &sensor_fusion, CarData const &car, int horizon)
 {
     std::map<int, vector<Coord> > predictions; // map of at most 6 predicitons of "n_horizon" (x,y) coordinates
 
-
-    // vector of indexes in sensor_fusion
+    // Get the index of the cloest vehicles
     vector<int> closest_objects = find_closest_vehicles_ID(sensor_fusion, car);
 
     for (int i = 0; i < closest_objects.size(); i++) {
@@ -140,15 +139,21 @@ void Predictions::set_lane_info(vector<vector<double>> const &sensor_fusion, Car
 // we generate predictions for closet car per lane behind us
 // => at most 6 predictions (for now on) as we have 3 lanes
 
-// sort of simple scene detection
+// Find the cloest vehicles based on sensor function and localization data
+// we only care about the cloest vehicles front and back for each lane
+// that is to say, front 0 and back 0, front 1 and back 1, front 2 and back 2 for lane 0, 1, 2, respectively
 vector<int> Predictions::find_closest_vehicles_ID(vector<vector<double>> const &sensor_fusion, CarData const &car) {
-    // Handle FOV and s wraparound
+    
+	// we only consider the vehicles within the field of view: 70 meters
     double sfov_min = car.s - GLOBAL_FIELD_OF_VIEW;
     double sfov_max = car.s + GLOBAL_FIELD_OF_VIEW;
+	
+	// handle the cases at the very begining / end of the waypoints
     double sfov_shit = 0;
     if (sfov_min < 0) { // Handle s wrapping
         sfov_shit = -sfov_min;
-    } else if (sfov_max > GLOBAL_MAX_S) {
+    } 
+	else if (sfov_max > GLOBAL_MAX_S) {
         sfov_shit = GLOBAL_MAX_S - sfov_max;
     }
     sfov_min += sfov_shit;
